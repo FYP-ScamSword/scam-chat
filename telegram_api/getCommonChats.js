@@ -10,7 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 
 /*
-   Environment files returns strings 
+   Environment files returns strings
    Only apiId has to be a number
 
    Other methods to change string into number:
@@ -32,14 +32,14 @@ const sessionId = process.env.SESSION_ID;
 const session = new StringSession(sessionId); // You should put your string session here
 const client = new TelegramClient(session, apiId, apiHash, {});
 
-(async function run() {
+(async function run () {
   await client.connect(); // This assumes you have already authenticated with .start()
 
   const result = await client.invoke(
     new Api.messages.GetCommonChats({
-      userId: '', //tele handle
+      userId: '', // tele handle
       maxId: 0,
-      limit: 100,
+      limit: 100
     })
   );
   console.log(result); // prints the result

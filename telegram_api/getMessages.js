@@ -4,11 +4,10 @@ const fs = require('fs');
 
 const dotenv = require('dotenv');
 
-dotenv.config({path: './.env'});
-
+dotenv.config({ path: './.env' });
 
 /*
-   Environment files returns strings 
+   Environment files returns strings
    Only apiId has to be a number
 
    Other methods to change string into number:
@@ -30,24 +29,21 @@ const sessionId = process.env.SESSION_ID;
 const session = new StringSession(sessionId); // You should put your string session here
 const client = new TelegramClient(session, apiId, apiHash, {});
 
-(async function run() {
+(async function run () {
   await client.connect(); // This assumes you have already authenticated with .start()
-
-
 
   const result = await client.invoke(
 
     new Api.messages.GetMessages({
       id: [0]
     })
-    
+
   );
 
   fs.writeFile('Output.txt', JSON.stringify(result), (err) => {
     if (err) throw err;
-  })
+  });
   console.log(result); // prints the result
-
 
   for (let i = 1; i < 100; i++) {
     const result = await client.invoke(
@@ -55,21 +51,19 @@ const client = new TelegramClient(session, apiId, apiHash, {});
       new Api.messages.GetMessages({
         id: [i]
       })
-      
+
     );
     const data = JSON.stringify(result) + '\n';
     fs.appendFile('Output.txt', data, (err) => {
       if (err) throw err;
-    })
+    });
     console.log(result); // prints the result
   }
-  
 
   // const messages = new Array<Api.Message>(1000);
   // for await (const message of client.iterMessages('me')) {
   //   messages.push(message);
-  // } 
+  // }
 
   // console.log(messages);
-  
 })();
