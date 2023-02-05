@@ -1,14 +1,13 @@
 // gets the common chats / groups you are in with the user - can be useful to see where/which telegram group the scammer found you from
 // however, cannot work if you don't know their telegram handle ..
 
-// as good as the UI part "Groups in common"
+// as good as the UI part 'Groups in common'
 
-const { Api, TelegramClient } = require("telegram");
-const { StringSession } = require("telegram/sessions");
-const dotenv = require("dotenv");
+const { Api, TelegramClient } = require('telegram');
+const { StringSession } = require('telegram/sessions');
+const dotenv = require('dotenv');
 
-dotenv.config({path: "./.env"});
-
+dotenv.config({ path: './.env' });
 
 /*
    Environment files returns strings 
@@ -38,7 +37,7 @@ const client = new TelegramClient(session, apiId, apiHash, {});
 
   const result = await client.invoke(
     new Api.messages.GetCommonChats({
-      userId: "", //tele handle
+      userId: '', //tele handle
       maxId: 0,
       limit: 100,
     })
