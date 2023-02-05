@@ -1,13 +1,12 @@
-const { Api, TelegramClient } = require("telegram");
-const { StringSession } = require("telegram/sessions");
+const { TelegramClient } = require('telegram');
+const { StringSession } = require('telegram/sessions');
 
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 
-dotenv.config({path: "./.env"});
-
+dotenv.config({ path: './.env' });
 
 /*
-   Environment files returns strings 
+   Environment files returns strings
    Only apiId has to be a number
 
    Other methods to change string into number:
@@ -28,23 +27,17 @@ const sessionId = process.env.SESSION_ID;
 /* without string session, one would have to verify by logging in to telegram / getting telegram OTP everytime the code runs */
 const session = new StringSession(sessionId); // You should put your string session here
 const client = new TelegramClient(session, apiId, apiHash, {});
-const tele_handle = process.env.TELE_HANDLE;
+const teleHandle = process.env.TELE_HANDLE;
 
-(async function run() {
-    await client.connect(); // This assumes you have already authenticated with .start()
+(async function run () {
+  await client.connect(); // This assumes you have already authenticated with .start()
 
+  // send a message to telegram handle
+  await client.sendMessage(teleHandle, { message: 'Hello!' });
 
-    // send a message to telegram handle
-    await client.sendMessage(tele_handle, { message: "Hello!"});
+  // ...but here I want markdown
+  await client.sendMessage(teleHandle, { message: 'Hello, **NAME**!!! \n\nfrom me~' }, { parseMode: 'md' });
 
- 
-
-    //...but here I want markdown
-    await client.sendMessage(tele_handle, {message:'Hello, **NAME**!!! \n\nfrom me~'}, {parseMode:"md"})
-
-    // ...and here I need HTML
-    // await client.sendMessage('me', {message:'Hello, <i>world</i>!'}, {parseMode:'HTML'})
-
-
-  
+  // ...and here I need HTML
+  // await client.sendMessage('me', {message:'Hello, <i>world</i>!'}, {parseMode:'HTML'})
 })();

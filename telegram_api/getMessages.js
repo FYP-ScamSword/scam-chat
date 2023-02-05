@@ -1,10 +1,10 @@
-const { Api, TelegramClient } = require("telegram");
-const { StringSession } = require("telegram/sessions");
+const { Api, TelegramClient } = require('telegram');
+const { StringSession } = require('telegram/sessions');
 const fs = require('fs');
 
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 
-dotenv.config({path: "./.env"});
+dotenv.config({path: './.env'});
 
 
 /*
@@ -57,7 +57,7 @@ const client = new TelegramClient(session, apiId, apiHash, {});
       })
       
     );
-    const data = JSON.stringify(result) + "\n";
+    const data = JSON.stringify(result) + '\n';
     fs.appendFile('Output.txt', data, (err) => {
       if (err) throw err;
     })
@@ -66,7 +66,7 @@ const client = new TelegramClient(session, apiId, apiHash, {});
   
 
   // const messages = new Array<Api.Message>(1000);
-  // for await (const message of client.iterMessages("me")) {
+  // for await (const message of client.iterMessages('me')) {
   //   messages.push(message);
   // } 
 
