@@ -1,4 +1,4 @@
-name: Node.js CI with Static Analysis
+name: CI
 
 on:
   [push]
@@ -8,10 +8,21 @@ env:
   NODE_ENV: production
 
 jobs:
-  eslint:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v1
-      - uses: stefanoeb/eslint-action@1.0.2
-        with:
-          files: telegram_api/
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: cd telegram_api && npm install
+
+    - name: Run static analysis
+      run: cd telegram_api && npx eslint .
+
