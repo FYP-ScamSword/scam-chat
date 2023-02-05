@@ -24,7 +24,7 @@ jobs:
       run: cd telegram_api; npm install
 
     - name: Run static analysis
-      run: $ npm install standard --save-dev; npx eslint .;
+      run: $ npx eslint .
 
     # - name: Run tests
     #   run: npm test
