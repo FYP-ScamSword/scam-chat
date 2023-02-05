@@ -2,7 +2,7 @@ name: Node.js CI with Static Analysis
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   NODE_ENV: production
