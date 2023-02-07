@@ -1,8 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  [push]
  
 
 env:
@@ -11,6 +12,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./telegram-api
 
     steps:
     - name: Checkout code
@@ -22,8 +26,8 @@ jobs:
         node-version: 14
 
     - name: Install dependencies
-      run: cd telegram_api && npm install --dev && npm install eslint-config-standard --save-dev
+      run: npm install --dev && npm install eslint-config-standard --save-dev
 
     - name: Run static analysis
-      run: cd telegram_api && npx eslint .
+      run: npx eslint .
 
