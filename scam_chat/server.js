@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 // routes
 import TeleRoute from './app/routes/tele_user.route.js';
-import ChatRoute from './app/routes/chat.route.js';
+// import ChatRoute from './app/routes/chat.route.js';
 
 const app = express();
 
@@ -28,4 +28,4 @@ mongoose
   .catch((error) => console.log(`${error} did not connect`));
 
 app.use('/tele_user', TeleRoute);
-app.use('/chat', ChatRoute);
+// app.use('/chat', ChatRoute);
