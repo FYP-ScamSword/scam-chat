@@ -1,14 +1,8 @@
 name: CI
 
 on:
-  # push:
-  #   branches: [ main ]
   [push]
  
-
-env:
-  NODE_ENV: production
-
 jobs:
   build:
     runs-on: ubuntu-latest
