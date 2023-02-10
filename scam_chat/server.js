@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 // routes
-import AuthRoute from './app/routes/auth.route.js';
+import TeleRoute from './app/routes/tele_user.route.js';
+import ChatRoute from './app/routes/chat.route.js';
 
 const app = express();
 
@@ -26,4 +27,5 @@ mongoose
   .then(() => app.listen(PORT, () => console.log(`Listening at Port ${PORT}`)))
   .catch((error) => console.log(`${error} did not connect`));
 
-app.use('/auth', AuthRoute);
+app.use('/tele_user', TeleRoute);
+app.use('/chat', ChatRoute);
