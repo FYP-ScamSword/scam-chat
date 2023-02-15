@@ -4,7 +4,7 @@
 ## Instructions:
 1. Create a `.env` file in the same folder
 2. Go to `https://my.telegram.org/apps` and retrieve API_ID and API_HASH of your Telegram account.
-3. Paste the code snippet below in the `.env` file, and fill up the API_ID and API_HASH. It is okay to leave SESSION_ID blank for now. 
+3. Paste the code snippet below in the `.env` file, and fill up the API_ID and API_HASH. It is okay to leave SESSION_ID blank for now.
 
 `.env`
 ```
@@ -19,7 +19,7 @@ SESSION_ID = ""
 
 
 ## Sequence
-1. Run `node login.js` first. 
+1. Run `node login.js` first.
 2. You will be required to login to your telegram account with your phone number.
 3. An OTP message in your Telegram account. Enter the OTP provided by your account.
 4. (If you have set a password) Enter your password.

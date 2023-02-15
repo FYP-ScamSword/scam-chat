@@ -1,8 +1,7 @@
 name: CI
 
-on:
-  [push]
- 
+on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,4 +23,3 @@ jobs:
 
     - name: Run static analysis
       run: npx eslint .
-
