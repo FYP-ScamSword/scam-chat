@@ -55,7 +55,7 @@ export const findChat = async (req, res) => {
       console.log("msg text is : ", msg.text);
 
       // creating the string for each text message
-      const textMessage = msg.text + '\n';
+      const textMessage = msg.sender.username + ": " + msg.text + '\n';
       // appending each text message to the text file
       fs.appendFile('Output.txt', textMessage, (err) => {
         if (err) throw err;
