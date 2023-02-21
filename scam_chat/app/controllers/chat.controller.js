@@ -41,11 +41,11 @@ export const findChat = async (req, res) => {
     console.log('what we got is ', msgs.length);
 
     // writing and appending the number of messages to Output.txt
-    fs.writeFile('Output.txt', stringNumOfMessages, (err) => {
+    await fs.writeFile('Output.txt', stringNumOfMessages, (err) => {
       if (err) throw err;
     });
 
-    fs.appendFile('Output.txt', stringNumMessagesPrinted, (err) => {
+    await fs.appendFile('Output.txt', stringNumMessagesPrinted, (err) => {
       if (err) throw err;
     });
 
