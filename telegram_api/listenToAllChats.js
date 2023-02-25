@@ -19,8 +19,7 @@ async function eventPrint (event) {
   const message = event.message;
 
   // Checks if it's a private message (from user or bot)
-  if (event.isPrivate){
-  
+  if (event.isPrivate) {
     const sender = await message.getSender();
     // log data of message
     console.log(sender.firstName + ': ' + message.text + ' [' + new Date(message.date * 1000) + ']\n');
@@ -28,16 +27,15 @@ async function eventPrint (event) {
     const msgs = await client.getMessages(sender.id, {
       limit: 1
     });
-    
+
     // if the chat only has 1 message i.e. first message received from scammer
-    if(msgs.total === 1) {
-      await client.sendMessage(sender,{
-        message:`i would like to know more!`
+    if (msgs.total === 1) {
+      await client.sendMessage(sender, {
+        message: 'i would like to know more!'
       });
 
-      console.log("replied to above message \n")
+      console.log('replied to above message \n');
     }
-    
   }
 }
 
