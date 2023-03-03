@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema(
   {
-    
+
     phone_num: {
       type: String,
       required: true

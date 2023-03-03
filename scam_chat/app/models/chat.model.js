@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 const ChatSchema = new mongoose.Schema(
   {
-    
     phone_num: {
       type: String,
       required: true
