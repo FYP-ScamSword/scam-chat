@@ -15,6 +15,25 @@ function isEmptyObject (obj) {
 // checks if they exist in DB
 // POST to chat if not exists, POST to messages if not exists
 export const findChat = async (req, res) => {
+
+  function getTime(date) {
+   
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+      
+    // Check whether AM or PM
+    var newformat = hours >= 12 ? 'PM' : 'AM';
+      
+    // Find current hour in AM-PM Format
+    hours = hours % 12;
+      
+    // To display "0" as "12"
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+      
+    return hours + ':' + minutes + ' ' + newformat;
+  }
+
   try {
     // retrieve user details from DB to login to tele
     const user = await UserModel.find({
@@ -61,8 +80,12 @@ export const findChat = async (req, res) => {
     // if not stored in db yet, save into db
     if (isEmptyObject(chatIds)) {
       const totalMsgs = msgs.total;
+      const sender = await msgs[0].getSender();
+      const contactName = sender.firstName;
 
       const chat = new ChatModel({
+        phone_num: req.params.phone_num,
+        contact_name: contactName,
         total_msgs: totalMsgs,
         chat_id: chatId
       });
@@ -81,16 +104,26 @@ export const findChat = async (req, res) => {
       // creating the string for each text message
       const textMessage = msg.sender.username + ': ' + msg.rawText + ' [' + new Date(msg.date * 1000) + '] ' + msg.id + ' \n';
       // appending each text message to the text file
-      fs.appendFile('Output.txt', textMessage, (err) => {
-        if (err) throw err;
-      });
+    
 
       const sender = await msg.getSender();
       const senderUsername = await sender.username;
       const senderId = msg.senderId;
+      const senderFirstName = sender.firstName;
       const text = msg.text;
       const msgId = msg.id;
       const date = new Date(msg.date * 1000);
+      const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1)+ '/' + date.getUTCFullYear()
+      const formattedTime = getTime(date)
+      var type = 0;
+      const chatId = msg.chatId;
+
+      if (Number(chatId) != Number(senderId)) {
+        type = 1;
+      }
+
+      console.log(type);
+   
 
       console.log(msgId);
       // check if current message already stored in DB by both chatId & msgId
@@ -105,12 +138,16 @@ export const findChat = async (req, res) => {
       // if not stored yet, save to db.
       if (isEmptyObject(messageId)) {
         const message = new MessageModel({
+          phone_num: req.params.phone_num,
           chat_id: chatId,
           msg_id: msgId,
           sender_username: senderUsername,
           sender_id: senderId,
+          sender_firstname: senderFirstName,
           text,
-          date
+          type,
+          date: formattedDate,
+          time: formattedTime
         });
         try {
           const result = await message.save();
@@ -172,3 +209,31 @@ export const getLatestChat = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+export const getAllChatsByNumber = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.find({
+      phone_num: { $in: [req.params.phone_num] }
+ 
+    });
+    res.status(200).json(chatDetails);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+
+}
+
+export const getChatByNumberAndId = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.find({
+      phone_num: { $in: [req.params.phone_num] },
+      chat_id: { $in: [req.params.chat_id] }
+ 
+    });
+    res.status(200).json(chatDetails);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+
+}

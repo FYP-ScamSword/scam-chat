@@ -4,6 +4,7 @@ const UserSchema = mongoose.Schema(
   {
     phone_num: {
       type: String,
+      unique: true,
       required: true
     },
     api_id: {
