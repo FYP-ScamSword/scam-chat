@@ -1,6 +1,5 @@
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
-import fs from 'fs/promises';
 import { NewMessage } from 'telegram/events/index.js';
 import UserModel from '../models/tele_user.model.js';
 import MessageModel from '../models/message.model.js';
@@ -9,6 +8,24 @@ import ChatModel from '../models/chat.model.js';
 // function to check if an object is empty (i.e. empty array)
 function isEmptyObject (obj) {
   return !Object.keys(obj).length;
+}
+
+// function to convert Date() object to 12-hour clock
+function getTime (date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // Check whether AM or PM
+  const newformat = hours >= 12 ? 'PM' : 'AM';
+
+  // Find current hour in AM-PM Format
+  hours = hours % 12;
+
+  // To display "0" as "12"
+  hours = hours || 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  return hours + ':' + minutes + ' ' + newformat;
 }
 // GETs from DB (retrieve user data)
 // retrieves chat and messages from telegram API
@@ -37,22 +54,6 @@ export const findChat = async (req, res) => {
       limit: 100
     });
 
-    // creating the strings that will be used to write to the Output.txt file
-    const stringNumOfMessages = 'There exists ' + JSON.stringify(msgs.total) + ' messages\n';
-    const stringNumMessagesPrinted = 'We printed ' + JSON.stringify(msgs.length) + ' messages\n';
-
-    console.log('the total number of msgs are', msgs.total);
-    console.log('what we got is ', msgs.length);
-
-    // writing and appending the number of messages to Output.txt
-    await fs.writeFile('Output.txt', stringNumOfMessages, (err) => {
-      if (err) { throw err; }
-    });
-
-    await fs.appendFile('Output.txt', stringNumMessagesPrinted, (err) => {
-      if (err) { throw err; }
-    });
-
     const chatId = msgs[0].chatId;
     // check if current chat already stored to db, by searching db by chatId
     const chatIds = await ChatModel.find({
@@ -61,8 +62,12 @@ export const findChat = async (req, res) => {
     // if not stored in db yet, save into db
     if (isEmptyObject(chatIds)) {
       const totalMsgs = msgs.total;
+      const sender = await msgs[0].getSender();
+      const contactName = sender.firstName;
 
       const chat = new ChatModel({
+        phone_num: req.params.phone_num,
+        contact_name: contactName,
         total_msgs: totalMsgs,
         chat_id: chatId
       });
@@ -75,22 +80,23 @@ export const findChat = async (req, res) => {
     }
 
     for (const msg of msgs) {
-      // console.log('msg is',msg); // this line is very verbose but helpful for debugging
-      console.log('msg text is : ', msg.text);
-
-      // creating the string for each text message
-      const textMessage = msg.sender.username + ': ' + msg.rawText + ' [' + new Date(msg.date * 1000) + '] ' + msg.id + ' \n';
-      // appending each text message to the text file
-      fs.appendFile('Output.txt', textMessage, (err) => {
-        if (err) throw err;
-      });
-
       const sender = await msg.getSender();
       const senderUsername = await sender.username;
       const senderId = msg.senderId;
+      const senderFirstName = sender.firstName;
       const text = msg.text;
       const msgId = msg.id;
       const date = new Date(msg.date * 1000);
+      const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+      const formattedTime = getTime(date);
+      let type = 0;
+      const chatId = msg.chatId;
+
+      if (Number(chatId) !== Number(senderId)) {
+        type = 1;
+      }
+
+      console.log(type);
 
       console.log(msgId);
       // check if current message already stored in DB by both chatId & msgId
@@ -105,12 +111,16 @@ export const findChat = async (req, res) => {
       // if not stored yet, save to db.
       if (isEmptyObject(messageId)) {
         const message = new MessageModel({
+          phone_num: req.params.phone_num,
           chat_id: chatId,
           msg_id: msgId,
           sender_username: senderUsername,
           sender_id: senderId,
+          sender_firstname: senderFirstName,
           text,
-          date
+          type,
+          date: formattedDate,
+          time: formattedTime
         });
         try {
           const result = await message.save();
@@ -168,6 +178,65 @@ export const getLatestChat = async (req, res) => {
     // adds an event handler for new messages
     client.addEventHandler(eventPrint, new NewMessage({}));
     res.status(200).json(userDetails);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// get all chats of the specified canary account by phone number
+export const getAllChatsByNumber = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.find({
+      phone_num: { $in: [req.params.phone_num] }
+
+    });
+    res.status(200).json(chatDetails);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// get specific chat by canary account phone number and chat ID
+export const getChatByNumberAndId = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.find({
+      phone_num: { $in: [req.params.phone_num] },
+      chat_id: { $in: [req.params.chat_id] }
+
+    });
+    res.status(200).json(chatDetails);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// create new chat
+export const createChat = async (req, res) => {
+  const chat = new ChatModel({
+    phone_num: req.body.phone_num,
+    contact_name: req.body.contact_name,
+    total_msgs: req.body.total_msgs,
+    chat_id: req.body.chat_id
+  });
+  try {
+    const result = await chat.save();
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Update chat (used when total_msgs increment)
+export const updateChat = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.findOne({
+      phone_num: { $in: [req.params.phone_num] },
+      chat_id: { $in: [req.params.chat_id] }
+    });
+    // console.log(chatDetails);
+    await chatDetails.updateOne({ $set: req.body });
+    res.status(200).json('Chat updated!');
   } catch (error) {
     res.status(500).json(error);
   }
