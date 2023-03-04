@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+
+####################################
+  # Atomic Microservice: Scam_Chat
+####################################
+  scam_chat:
+    build:
+      context: ./scam_chat
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - '.env'
+    ports:
+      - 8081:8081 
+    environment:
+      - MONGODB_CONNECTION =$MONGODB_CONNECTION
+      - PORT= $PORT
+    
+    stdin_open: true
+    tty: true

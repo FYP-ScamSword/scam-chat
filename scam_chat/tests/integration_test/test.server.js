@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 // routes
-import TeleRoute from './app/routes/tele_user.route.js';
-import ChatRoute from './app/routes/chat.route.js';
-import MessageRoute from './app/routes/message.route.js';
+import TeleRoute from '../../app/routes/tele_user.route.js';
+import ChatRoute from '../../app/routes/chat.route.js';
+import MessageRoute from '../../app/routes/message.route.js';
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(cors());
 dotenv.config();
 const PORT = process.env.PORT;
 
-const CONNECTION = process.env.MONGODB_CONNECTION;
+const CONNECTION = process.env.TESTDB_URI;
 
 mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
