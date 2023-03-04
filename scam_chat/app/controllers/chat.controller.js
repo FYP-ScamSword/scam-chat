@@ -9,28 +9,29 @@ import ChatModel from '../models/chat.model.js';
 function isEmptyObject (obj) {
   return !Object.keys(obj).length;
 }
+
+// function to convert Date() object to 12-hour clock
+function getTime (date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // Check whether AM or PM
+  const newformat = hours >= 12 ? 'PM' : 'AM';
+
+  // Find current hour in AM-PM Format
+  hours = hours % 12;
+
+  // To display "0" as "12"
+  hours = hours || 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  return hours + ':' + minutes + ' ' + newformat;
+}
 // GETs from DB (retrieve user data)
 // retrieves chat and messages from telegram API
 // checks if they exist in DB
 // POST to chat if not exists, POST to messages if not exists
 export const findChat = async (req, res) => {
-  function getTime (date) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-
-    // Check whether AM or PM
-    const newformat = hours >= 12 ? 'PM' : 'AM';
-
-    // Find current hour in AM-PM Format
-    hours = hours % 12;
-
-    // To display "0" as "12"
-    hours = hours || 12;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-
-    return hours + ':' + minutes + ' ' + newformat;
-  }
-
   try {
     // retrieve user details from DB to login to tele
     const user = await UserModel.find({
@@ -182,6 +183,7 @@ export const getLatestChat = async (req, res) => {
   }
 };
 
+// get all chats of the specified canary account by phone number
 export const getAllChatsByNumber = async (req, res) => {
   try {
     const chatDetails = await ChatModel.find({
@@ -194,6 +196,7 @@ export const getAllChatsByNumber = async (req, res) => {
   }
 };
 
+// get specific chat by canary account phone number and chat ID
 export const getChatByNumberAndId = async (req, res) => {
   try {
     const chatDetails = await ChatModel.find({
@@ -207,6 +210,7 @@ export const getChatByNumberAndId = async (req, res) => {
   }
 };
 
+// create new chat
 export const createChat = async (req, res) => {
   const chat = new ChatModel({
     phone_num: req.body.phone_num,
@@ -218,6 +222,21 @@ export const createChat = async (req, res) => {
     const result = await chat.save();
     console.log(result);
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Update chat (used when total_msgs increment)
+export const updateChat = async (req, res) => {
+  try {
+    const chatDetails = await ChatModel.findOne({
+      phone_num: { $in: [req.params.phone_num] },
+      chat_id: { $in: [req.params.chat_id] }
+    });
+    // console.log(chatDetails);
+    await chatDetails.updateOne({ $set: req.body });
+    res.status(200).json('Chat updated!');
   } catch (error) {
     res.status(500).json(error);
   }
