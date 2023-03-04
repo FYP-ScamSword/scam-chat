@@ -6,6 +6,12 @@
     },
     "extends": "standard",
     "overrides": [
+        {
+            "files": ["tests/integration_test/*"], 
+            "rules": {
+              "no-undef": "off"
+            }
+          }
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
