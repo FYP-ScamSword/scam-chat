@@ -61,15 +61,27 @@ export const findChat = async (req, res) => {
     });
     // if not stored in db yet, save into db
     if (isEmptyObject(chatIds)) {
-      const totalMsgs = msgs.total;
       const sender = await msgs[0].getSender();
-      const contactName = sender.firstName;
+      const totalMsgs = msgs.total;
+      const chatId = msgs[0].chatId;
+      const contact = await client.getParticipants(chatId, {})
+      const contactName = contact[0].firstName;
+      const latestMsg = msgs[0].text;
+      let type = 0;
+      const time = msgs[0].date;
+    
+      if (Number(chatId) !== Number(sender.id)) {
+        type = 1;
+      }
 
       const chat = new ChatModel({
         phone_num: req.params.phone_num,
         contact_name: contactName,
         total_msgs: totalMsgs,
-        chat_id: chatId
+        chat_id: chatId,
+        latest_message: latestMsg,
+        type: type,
+        time: time
       });
       try {
         const result = await chat.save();
@@ -187,9 +199,9 @@ export const getLatestChat = async (req, res) => {
 export const getAllChatsByNumber = async (req, res) => {
   try {
     const chatDetails = await ChatModel.find({
-      phone_num: { $in: [req.params.phone_num] }
+      phone_num: req.params.phone_num
 
-    });
+    }).sort({ time : -1});
     res.status(200).json(chatDetails);
   } catch (error) {
     res.status(500).json(error);
@@ -216,7 +228,10 @@ export const createChat = async (req, res) => {
     phone_num: req.body.phone_num,
     contact_name: req.body.contact_name,
     total_msgs: req.body.total_msgs,
-    chat_id: req.body.chat_id
+    chat_id: req.body.chat_id,
+    latest_message: req.body.latest_message,
+    type: req.body.type,
+    time: req.body.time
   });
   try {
     const result = await chat.save();
