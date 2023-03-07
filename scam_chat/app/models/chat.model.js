@@ -15,7 +15,13 @@ const ChatSchema = new mongoose.Schema(
     total_msgs: {
       type: Number
     },
-    total_retrieved: {
+    latest_message: {
+      type: String
+    },
+    type: {
+      type: Number
+    },
+    time : {
       type: Number
     }
   },

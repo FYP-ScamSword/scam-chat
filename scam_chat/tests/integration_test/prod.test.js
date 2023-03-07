@@ -61,7 +61,11 @@ describe('POST /chat/createChat', () => {
       phone_num: '+6512345678',
       contact_name: 'Hello',
       total_msgs: 10,
-      chat_id: '12345678910'
+      chat_id: '12345678910',
+      latest_message: 'hi',
+      type: 1,
+      time: 1234
+
     });
     expect(res.statusCode).toBe(201);
     expect(res.body.phone_num).toBe('+6512345678');
