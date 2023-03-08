@@ -20,15 +20,12 @@ jobs:
 
     - name: Install dependencies
       run: npm install --dev && npm install eslint-config-standard --save-dev
-
     
-      
   tests:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
       
     - name: Run integration test
       working-directory: scam_chat
