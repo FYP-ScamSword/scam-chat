@@ -37,7 +37,7 @@ jobs:
     - name: 'Create env file'
       working-directory: scam_chat
       run: |
-        echo '${{ secrets.ENV_FILE }}'' > .env
+        echo '${{ secrets.ENV_FILE }}' > .env
 
     - name: Run integration test
       working-directory: scam_chat
