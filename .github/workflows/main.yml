@@ -39,6 +39,9 @@ jobs:
       run: |
         echo '${{ secrets.ENV_FILE }}' > .env
 
+    - name: Run static analysis
+      run: npx eslint .
+
     - name: Run integration test
       working-directory: scam_chat
       run: npm run test
