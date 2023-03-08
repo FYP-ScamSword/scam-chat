@@ -36,7 +36,7 @@ jobs:
       
     - name: 'Create env file'
       run: |
-        echo "${{ MongoURI.ENV_FILE }}" > .env
+        echo "${{ secrets.MongoURI.ENV_FILE }}" > .env
 
     - name: Run integration test
       working-directory: scam_chat
