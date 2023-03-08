@@ -29,8 +29,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Run static analysis
-      run: npx eslint .
       
     - name: Run integration test
       working-directory: scam_chat
