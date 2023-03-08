@@ -19,7 +19,7 @@ jobs:
         node-version: 14
 
     - name: Install dependencies
-      run: npm install --dev && npm install eslint-config-standard --save-dev
+      run: npm install --dev
     
   tests:
     needs: build
