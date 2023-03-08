@@ -34,6 +34,11 @@ jobs:
     - name: Install dependencies
       run: npm install
       
+    - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
     - name: Run integration test
       working-directory: scam_chat
       run: npm run test
+      
