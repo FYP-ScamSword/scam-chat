@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: telegram_api
+        working-directory: scam_chat
 
     steps:
     - name: Checkout code
@@ -21,5 +21,17 @@ jobs:
     - name: Install dependencies
       run: npm install --dev && npm install eslint-config-standard --save-dev
 
+    
+      
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
     - name: Run static analysis
       run: npx eslint .
+      
+    - name: Run integration test
+      working-directory: scam_chat
+      run: npm run test
