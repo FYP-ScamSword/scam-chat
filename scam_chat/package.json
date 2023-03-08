@@ -24,11 +24,11 @@
     "jest": "^29.4.3",
     "mongoose": "^6.9.1",
     "supertest": "^6.3.3",
-    "telegram": "^2.15.5"
-  },
-  "devDependencies": {
+    "telegram": "^2.15.5",
     "eslint-config-standard": "^17.0.0"
   },
-  "testEnvironment": "node" 
-  
+  "devDependencies": {
+    
+  },
+  "testEnvironment": "node"
 }
