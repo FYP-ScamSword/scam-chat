@@ -55,3 +55,26 @@ export const updateMessage = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+
+export const getMessagesByChatId = async(req, res) => {
+  MessageModel.aggregate([
+    {
+      $match: { phone_num:req.params.phone_num,
+                chat_id: req.params.chat_id }
+    },
+    {
+      $group: {
+        _id: {phone_num: '$phone_num', chat_id: '$chat_id', ender_id:'$sender_id', sender_username:'$sender_username', sender_firstname:'$sender_firstname', date:'$date'},
+        messages: { $push: { msg_id:'$msg_id', text: '$text',  type:'$type', time: '$time' } }
+      }
+    }
+  ], function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).json(result);
+      // console.log(result);
+    }
+  });
+}
