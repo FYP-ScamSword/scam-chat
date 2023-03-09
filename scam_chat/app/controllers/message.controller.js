@@ -68,7 +68,7 @@ export const getMessagesByChatId = async (req, res) => {
       $group: {
         _id: { phone_num: '$phone_num', chat_id: '$chat_id', date: '$date' },
         users: {
-          $addToSet: { firstname: "$sender_firstname", type: "$type" }
+          $addToSet: { firstname: '$sender_firstname', type: '$type' }
         },
         messages: { $push: { msg_id: '$msg_id', text: '$text', type: '$type', time: '$time' } }
       }
@@ -76,11 +76,11 @@ export const getMessagesByChatId = async (req, res) => {
     {
       $project: {
         _id: 0,
-        phone_num: "$_id.phone_num",
-        chat_id: "$_id.chat_id",
-        users: "$users",
-        date: "$_id.date",
-        messages: { $reverseArray: "$messages" }
+        phone_num: '$_id.phone_num',
+        chat_id: '$_id.chat_id',
+        users: '$users',
+        date: '$_id.date',
+        messages: { $reverseArray: '$messages' }
       }
     }
   ], function (err, result) {
