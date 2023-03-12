@@ -31,7 +31,7 @@ export const getAllUsers = async (req, res) => {
 export const getUserByNum = async (req, res) => {
   try {
     const user = await UserModel.find({
-      members: { $in: [req.params.phone_num] }
+      phone_num: req.params.phone_num
     });
     res.status(200).json(user);
   } catch (error) {

@@ -10,6 +10,6 @@ router.post('/', createUser);
 router.get('/', getAllUsers);
 
 // Retrieve a single user with number
-router.get('/:user_id', getUserByNum);
+router.get('/:phone_num', getUserByNum);
 
 export default router;
