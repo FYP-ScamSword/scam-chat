@@ -1,6 +1,10 @@
 import MessageModel from '../models/message.model.js';
 
-// get message by canary account's phone number, chatID and message ID
+/**
+ * Retrieves a message uniquely identified by `phone_num`, `chat_id` and `msq_id`
+ * @param {*} req
+ * @param {*} res
+ */
 export const getMsgByNumberChatIdMsgId = async (req, res) => {
   try {
     const msgDetails = await MessageModel.find({
@@ -15,7 +19,11 @@ export const getMsgByNumberChatIdMsgId = async (req, res) => {
   }
 };
 
-// post new message
+/**
+ * Send a new telegram message
+ * @param {*} req
+ * @param {*} res
+ */
 export const createMessage = async (req, res) => {
   const message = new MessageModel({
     phone_num: req.body.phone_num,
@@ -39,7 +47,11 @@ export const createMessage = async (req, res) => {
   }
 };
 
-// update message
+/**
+ * Edit an existing message
+ * @param {*} req
+ * @param {*} res
+ */
 export const updateMessage = async (req, res) => {
   try {
     const msgDetails = await MessageModel.findOne({
