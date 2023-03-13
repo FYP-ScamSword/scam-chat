@@ -247,7 +247,6 @@ export const getChatByNumberAndId = async (req, res) => {
   }
 };
 
-
 /**
  * Create new chat
  * @param {*} req
@@ -271,7 +270,6 @@ export const createChat = async (req, res) => {
     res.status(500).json(error);
   }
 };
-
 
 /**
  * Update chat when `total_msgs` is incremented
