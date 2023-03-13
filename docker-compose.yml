@@ -11,12 +11,12 @@ services:
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - '.env'
+    - .env
     ports:
-      - 8081:8081 
+    - 8081:8081
     environment:
-      - MONGODB_CONNECTION =$MONGODB_CONNECTION
-      - PORT= $PORT
-    
+    - MONGODB_CONNECTION =$MONGODB_CONNECTION
+    - PORT= $PORT
+
     stdin_open: true
     tty: true

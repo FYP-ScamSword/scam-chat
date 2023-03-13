@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 
 /*
-   Environment files returns strings
+   Environment files return strings
    Only apiId has to be a number
 
    Other methods to change string into number:
