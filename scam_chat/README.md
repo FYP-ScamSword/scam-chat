@@ -1,22 +1,21 @@
 # Scam Chat
 
+## Instructions
 
+1. Create a `.env` file within this `scam_chat` directory to specify a MongoDB connection string and application port number
+   - The MongoDB connection string can be local (`mongodb://localhost:27017`) or [remote](https://www.mongodb.com/docs/atlas/compass-connection/)
+   - The port can any available local port number of choice. Generally, port numbers 808X are available.
 
-## Instructions:
-1. Create a `.env` file in the same folder as this `README.md` file.
-2. Add your MongoDB connection string and port to the `.env` file.
-The Mongo DB connection string is `mongodb://localhost:27017` by default if you are running the database on your localhost.
-
-The port can be a port number of your choice. I have used 8081.
 ```
-MONGODB_CONNECTION = ""
+MONGODB_CONNECTION=""
 PORT=8081
 ```
 
-## Pre-Installation:
-1. Have NodeJS installed (Currently using v16.15.0)
-2. `npm install`
-3. If you are running MongoDB on your localhost, install the [MongoDB community server](https://www.mongodb.com/try/download/community).
+## Prerequisites
 
-## To run:
-1. Enter `npm run start`.
+1. `npm install`
+2. If you are running MongoDB on your localhost, install the [MongoDB community server](https://www.mongodb.com/try/download/community).
+
+## Usage
+
+1. Start the application locally with`npm run start`.
