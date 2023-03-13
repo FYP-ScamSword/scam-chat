@@ -7,7 +7,7 @@
     "extends": "standard",
     "overrides": [
         {
-            "files": ["tests/integration_test/*"], 
+            "files": ["tests/integration_test/*"],
             "rules": {
               "no-undef": "off"
             }

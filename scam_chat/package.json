@@ -29,6 +29,6 @@
   "devDependencies": {
     "eslint-config-standard": "^17.0.0"
   },
-  "testEnvironment": "node" 
-  
+  "testEnvironment": "node"
+
 }

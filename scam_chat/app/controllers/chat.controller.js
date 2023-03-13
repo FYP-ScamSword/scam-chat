@@ -69,7 +69,7 @@ export const findChat = async (req, res) => {
       const latestMsg = msgs[0].text;
       let type = 0;
       const time = msgs[0].date;
-    
+
       if (Number(chatId) !== Number(sender.id)) {
         type = 1;
       }
