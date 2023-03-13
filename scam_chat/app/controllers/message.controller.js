@@ -68,6 +68,12 @@ export const updateMessage = async (req, res) => {
   }
 };
 
+/**
+ * Get all messages from a conversation between a canary account identified by `phone_num`,
+ * and external user identified by `chat_id`
+ * @param {*} req
+ * @param {*} res
+ */
 export const getMessagesByChatId = async (req, res) => {
   MessageModel.aggregate([
     {
