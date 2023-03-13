@@ -1,8 +1,9 @@
 import express from 'express';
-import { getMsgByNumberChatIdMsgId, createMessage, updateMessage } from '../controllers/message.controller.js';
+import { getMsgByNumberChatIdMsgId, createMessage, updateMessage, getMessagesByChatId } from '../controllers/message.controller.js';
 const router = express.Router();
 
 router.get('/get_msg/:phone_num/:chat_id/:msg_id', getMsgByNumberChatIdMsgId);
+router.get('/bychatID/:phone_num/:chat_id', getMessagesByChatId);
 
 router.post('/', createMessage);
 

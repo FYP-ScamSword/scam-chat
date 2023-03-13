@@ -77,7 +77,7 @@ export const findChat = async (req, res) => {
       const sender = await msgs[0].getSender();
       const totalMsgs = msgs.total;
       const chatId = msgs[0].chatId;
-      const contact = await client.getParticipants(chatId, {})
+      const contact = await client.getParticipants(chatId, {});
       const contactName = contact[0].firstName;
       const latestMsg = msgs[0].text;
       let type = 0;
@@ -93,8 +93,8 @@ export const findChat = async (req, res) => {
         total_msgs: totalMsgs,
         chat_id: chatId,
         latest_message: latestMsg,
-        type: type,
-        time: time
+        type,
+        time
       });
       try {
         const result = await chat.save();
@@ -222,7 +222,7 @@ export const getAllChatsByNumber = async (req, res) => {
     const chatDetails = await ChatModel.find({
       phone_num: req.params.phone_num
 
-    }).sort({ time : -1});
+    }).sort({ time: -1 });
     res.status(200).json(chatDetails);
   } catch (error) {
     res.status(500).json(error);
