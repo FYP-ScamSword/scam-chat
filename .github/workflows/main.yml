@@ -20,21 +20,21 @@ jobs:
 
     - name: Install dependencies
       run: npm install --dev
-    
+
   tests:
     needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: scam_chat
-    
+
     steps:
     - uses: actions/checkout@v3
 
     - name: Install dependencies
       run: npm install
-      
-    - name: 'Create env file'
+
+    - name: Create env file
       working-directory: scam_chat
       run: |
         echo '${{ secrets.ENV_FILE }}' > .env
@@ -45,4 +45,3 @@ jobs:
     - name: Run integration test
       working-directory: scam_chat
       run: npm run test
-
