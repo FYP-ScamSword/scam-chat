@@ -5,12 +5,20 @@ import UserModel from '../models/tele_user.model.js';
 import MessageModel from '../models/message.model.js';
 import ChatModel from '../models/chat.model.js';
 
-// function to check if an object is empty (i.e. empty array)
+/**
+ * Checks if an object is empty
+ * @param {*} obj
+ * @returns
+ */
 function isEmptyObject (obj) {
   return !Object.keys(obj).length;
 }
 
-// function to convert Date() object to 12-hour clock
+/**
+ * Converts js `Date` to 12-hour format
+ * @param {*} date
+ * @returns
+ */
 function getTime (date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
@@ -27,10 +35,15 @@ function getTime (date) {
 
   return hours + ':' + minutes + ' ' + newformat;
 }
-// GETs from DB (retrieve user data)
-// retrieves chat and messages from telegram API
-// checks if they exist in DB
-// POST to chat if not exists, POST to messages if not exists
+
+/**
+ * GETs from DB (retrieve user data)
+ * retrieves chat and messages from telegram API
+ * checks if they exist in DB
+ * POST to chat if not exists, POST to messages if not exists
+ * @param {*} req
+ * @param {*} res
+ */
 export const findChat = async (req, res) => {
   try {
     // retrieve user details from DB to login to tele
@@ -150,8 +163,12 @@ export const findChat = async (req, res) => {
   res.status(200).json();
 };
 
-// work in progress -- not functional yet
-// meant to listen to telegram server to get live updates for new messages
+/**
+ * TODO: Not fully implemented yet
+ * Polling function that retrieves latest messages from telegram server
+ * @param {*} req
+ * @param {*} res
+ */
 export const getLatestChat = async (req, res) => {
   try {
     const user = await UserModel.find({
@@ -195,7 +212,11 @@ export const getLatestChat = async (req, res) => {
   }
 };
 
-// get all chats of the specified canary account by phone number
+/**
+ * Get all chats of the specified canary account by phone number
+ * @param {*} req
+ * @param {*} res
+ */
 export const getAllChatsByNumber = async (req, res) => {
   try {
     const chatDetails = await ChatModel.find({
@@ -208,7 +229,11 @@ export const getAllChatsByNumber = async (req, res) => {
   }
 };
 
-// get specific chat by canary account phone number and chat ID
+/**
+ * Get a specific chat by canary account phone number and chat ID
+ * @param {*} req
+ * @param {*} res
+ */
 export const getChatByNumberAndId = async (req, res) => {
   try {
     const chatDetails = await ChatModel.find({
@@ -222,7 +247,12 @@ export const getChatByNumberAndId = async (req, res) => {
   }
 };
 
-// create new chat
+
+/**
+ * Create new chat
+ * @param {*} req
+ * @param {*} res
+ */
 export const createChat = async (req, res) => {
   const chat = new ChatModel({
     phone_num: req.body.phone_num,
@@ -242,7 +272,12 @@ export const createChat = async (req, res) => {
   }
 };
 
-// Update chat (used when total_msgs increment)
+
+/**
+ * Update chat when `total_msgs` is incremented
+ * @param {*} req
+ * @param {*} res
+ */
 export const updateChat = async (req, res) => {
   try {
     const chatDetails = await ChatModel.findOne({
