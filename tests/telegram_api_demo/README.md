@@ -1,5 +1,7 @@
 # Telegram API
 
+A simple demo of how to read and write messages to Telegram using GramJS.
+
 ## Prerequisites
 
 1. Install dependencies with `npm install`
@@ -12,10 +14,6 @@ API_ID=""
 API_HASH=""
 SESSION_ID=""
 ```
-
-## Prerequisites
-
-1. `npm install`
 
 ## Usage
 
