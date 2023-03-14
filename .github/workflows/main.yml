@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: scam_chat
+        working-directory: .
 
     steps:
     - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: scam_chat
+        working-directory: .
 
     steps:
     - uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
       run: npm install
 
     - name: Create env file
-      working-directory: scam_chat
+      working-directory: .
       run: |
         echo '${{ secrets.ENV_FILE }}' > .env
 
@@ -43,5 +43,5 @@ jobs:
       run: npx eslint .
 
     - name: Run integration test
-      working-directory: scam_chat
+      working-directory: .
       run: npm run test
