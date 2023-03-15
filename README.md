@@ -35,7 +35,17 @@ Scam chat is a service that facilitates the sending and receiving messages for c
 
 ### Usage
 
-1. Follow further instructions within the separate `README.md` documents in `scam_chat` and `telegram_api`
+1. Run `npm install` for project dependencies
+2. Create a `.env` file within the root directory to specify a MongoDB connection string and application port number
+   - The MongoDB connection string can be local (`mongodb://localhost:27017`) or [remote](https://www.mongodb.com/docs/atlas/compass-connection/)
+   - The port can any available local port number of choice. Generally, port numbers 808X are available.
+
+```
+MONGODB_CONNECTION=""
+PORT=8081
+```
+
+3. Start the application locally with `npm run start`.
 
 ## Roadmap
 
