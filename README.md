@@ -35,6 +35,12 @@ Scam chat is a service that facilitates the sending and receiving messages for c
 
 ### Usage
 
+#### Account API setup
+
+- Navigate to `tests/telegram_api_demo` and follow the corresponding [README](./tests/telegram_api_demo/README.md)
+
+#### Project setup
+
 1. Run `npm install` for project dependencies
 2. Create a `.env` file within the root directory to specify a MongoDB connection string and application port number
    - The MongoDB connection string can be local (`mongodb://localhost:27017`) or [remote](https://www.mongodb.com/docs/atlas/compass-connection/)
