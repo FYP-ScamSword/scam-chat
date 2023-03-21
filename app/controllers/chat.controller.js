@@ -10,7 +10,7 @@ import ChatModel from '../models/chat.model.js';
  * @param {*} obj
  * @returns
  */
-function isEmptyObject(obj) {
+function isEmptyObject (obj) {
   return !Object.keys(obj).length;
 }
 
@@ -19,7 +19,7 @@ function isEmptyObject(obj) {
  * @param {*} date
  * @returns
  */
-function getTime(date) {
+function getTime (date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
 
@@ -48,13 +48,14 @@ export const findChat = async (req, res) => {
   try {
     // retrieve user details from DB to login to tele
     const user = await UserModel.find({
-      phone_num: req.params.phone_num
+      members: { $in: [req.params.phone_num] }
     });
 
     const userDetails = user[0];
     const apiId = Number(userDetails.api_id);
     const apiHash = String(userDetails.api_hash);
     const sessionId = String(userDetails.session_id);
+    const teleHandle = req.params.tele_handle;
 
     const session = new StringSession(sessionId);
 
@@ -62,112 +63,99 @@ export const findChat = async (req, res) => {
 
     await client.connect({ onError: (err) => console.log(err) });
 
-    const chats = await client.getDialogs("me", {});
-    const me = await client.getParticipants("me", {});
-    const myChatId = me[0].id;
-    
+    const msgs = await client.getMessages(teleHandle, {
+      limit: 100
+    });
 
-    for (const chat of chats) {
-      var msgs;
-      var chatId = chat.id;
-    
-      if (chatId == 777000 || chatId.equals(myChatId)) {
-        continue;
-      } else if (chatId > 0) {
-        msgs = await client.getMessages(chatId, {
-          limit: 100
-        });
-      } else {
-        continue;
+    const chatId = msgs[0].chatId;
+    // check if current chat already stored to db, by searching db by chatId
+    const chatIds = await ChatModel.find({
+      chat_id: { $in: [chatId] }
+    });
+    // if not stored in db yet, save into db
+    if (isEmptyObject(chatIds)) {
+      const sender = await msgs[0].getSender();
+      const totalMsgs = msgs.total;
+      const chatId = msgs[0].chatId;
+      const contact = await client.getParticipants(chatId, {});
+      const contactName = contact[0].firstName;
+      const latestMsg = msgs[0].text;
+      let type = 0;
+      const time = msgs[0].date;
+
+      if (Number(chatId) !== Number(sender.id)) {
+        type = 1;
       }
 
-      // check if current chat already stored to db, by searching db by chatId
-      const chatIdQuert = await ChatModel.find({
-        chat_id: chatId
+      const chat = new ChatModel({
+        phone_num: req.params.phone_num,
+        contact_name: contactName,
+        total_msgs: totalMsgs,
+        chat_id: chatId,
+        latest_message: latestMsg,
+        type,
+        time
       });
-      // if not stored in db yet, save into db
-      if (isEmptyObject(chatIdQuery)) {
-        const sender = await msgs[0].getSender();
-        const totalMsgs = msgs.total;
-        // const chatId = msgs[0].chatId;
-        const contact = await client.getParticipants(chatId, {});
-        const contactName = contact[0].firstName;
-        const latestMsg = msgs[0].text;
-        let type = 0;
-        const time = msgs[0].date;
+      try {
+        const result = await chat.save();
+        console.log(result);
+      } catch (error) {
 
-        if (Number(chatId) !== Number(sender.id)) {
-          type = 1;
-        }
-
-        const chat = new ChatModel({
-          phone_num: req.params.phone_num,
-          contact_name: contactName,
-          total_msgs: totalMsgs,
-          chat_id: chatId,
-          latest_message: latestMsg,
-          type,
-          time
-        });
-        try {
-          const result = await chat.save();
-          console.log(result);
-        } catch (error) {
-
-        }
-      }
-
-      for (const msg of msgs) {
-        const sender = await msg.getSender();
-        const senderUsername = await sender.username;
-        const senderId = msg.senderId;
-        const senderFirstName = sender.firstName;
-        const text = msg.text;
-        const msgId = msg.id;
-        const date = new Date(msg.date * 1000);
-        const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
-        const formattedTime = getTime(date);
-        let type = 0;
-        const chatId = msg.chatId;
-
-        if (Number(chatId) !== Number(senderId)) {
-          type = 1;
-        }
-
-        // check if current message already stored in DB by both chatId & msgId
-        const messageId = await MessageModel.find({
-
-          msg_id: { $in: [msgId] },
-          chat_id: { $in: [chatId] }
-
-        });
-
-        console.log(messageId);
-        // if not stored yet, save to db.
-        if (isEmptyObject(messageId)) {
-          const message = new MessageModel({
-            phone_num: req.params.phone_num,
-            chat_id: chatId,
-            msg_id: msgId,
-            sender_username: senderUsername,
-            sender_id: senderId,
-            sender_firstname: senderFirstName,
-            text,
-            type,
-            date: formattedDate,
-            time: formattedTime
-          });
-          try {
-            const result = await message.save();
-
-            console.log(result);
-          } catch (error) {
-            // res.status(500).json(error);
-          }
-        }
       }
     }
 
+    for (const msg of msgs) {
+      const sender = await msg.getSender();
+      const senderUsername = await sender.username;
+      const senderId = msg.senderId;
+      const senderFirstName = sender.firstName;
+      const text = msg.text;
+      const msgId = msg.id;
+      const date = new Date(msg.date * 1000);
+      const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+      const formattedTime = getTime(date);
+      let type = 0;
+      const chatId = msg.chatId;
+
+      if (Number(chatId) !== Number(senderId)) {
+        type = 1;
+      }
+
+      console.log(type);
+
+      console.log(msgId);
+      // check if current message already stored in DB by both chatId & msgId
+      const messageId = await MessageModel.find({
+
+        msg_id: { $in: [msgId] },
+        chat_id: { $in: [chatId] }
+
+      });
+
+      console.log(messageId);
+      // if not stored yet, save to db.
+      if (isEmptyObject(messageId)) {
+        const message = new MessageModel({
+          phone_num: req.params.phone_num,
+          chat_id: chatId,
+          msg_id: msgId,
+          sender_username: senderUsername,
+          sender_id: senderId,
+          sender_firstname: senderFirstName,
+          text,
+          type,
+          date: formattedDate,
+          time: formattedTime
+        });
+        try {
+          const result = await message.save();
+
+          console.log(result);
+        } catch (error) {
+          // res.status(500).json(error);
+        }
+      }
+    }
   } catch (error) {
     res.status(500).json(error);
   }
@@ -199,7 +187,7 @@ export const getLatestChat = async (req, res) => {
 
     await client.connect({ onError: (err) => console.log(err) });
 
-    async function eventPrint(event) {
+    async function eventPrint (event) {
       const message = event.message;
 
       // Checks if it's a private message (from user or bot)
