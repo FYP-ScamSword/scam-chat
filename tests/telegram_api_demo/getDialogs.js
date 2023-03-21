@@ -47,7 +47,7 @@ const session = new StringSession(sessionId); // You should put your string sess
     await client.connect();
 
     // retrieving the messages by Telegram handle (placed in .env file)
-    const chats = await client.getDialogs("me", {});
+    const chats = await client.getDialogs('me', {});
 
     // creating the strings that will be used to write to the Output.txt file
     const stringNumOfChats = 'There exists ' + JSON.stringify(chats.total) + ' chats\n';
@@ -58,23 +58,20 @@ const session = new StringSession(sessionId); // You should put your string sess
     });
 
     for (const chat of chats) {
-      
       const chatId = chat.id;
-      var outputText = "";
+      let outputText = '';
 
       if (chatId > 0) {
         const contact = await client.getParticipants(chatId, {});
         const contactName = contact[0].firstName;
-        outputText = chatId + ": " + contactName + "\n";
+        outputText = chatId + ': ' + contactName + '\n';
       } else {
-        outputText = chatId + "\n";
+        outputText = chatId + '\n';
       }
-      
 
       // appending each text chat to the text file
       fs.appendFile('Output.txt', outputText, (err) => {
         if (err) throw err;
       });
-
     }
   })();

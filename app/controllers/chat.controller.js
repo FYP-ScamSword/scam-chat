@@ -10,7 +10,7 @@ import ChatModel from '../models/chat.model.js';
  * @param {*} obj
  * @returns
  */
-function isEmptyObject(obj) {
+function isEmptyObject (obj) {
   return !Object.keys(obj).length;
 }
 
@@ -19,7 +19,7 @@ function isEmptyObject(obj) {
  * @param {*} date
  * @returns
  */
-function getTime(date) {
+function getTime (date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
 
@@ -62,16 +62,15 @@ export const findChat = async (req, res) => {
 
     await client.connect({ onError: (err) => console.log(err) });
 
-    const chats = await client.getDialogs("me", {});
-    const me = await client.getParticipants("me", {});
+    const chats = await client.getDialogs('me', {});
+    const me = await client.getParticipants('me', {});
     const myChatId = me[0].id;
-    
 
     for (const chat of chats) {
-      var msgs;
-      var chatId = chat.id;
-    
-      if (chatId == 777000 || chatId.equals(myChatId)) {
+      let msgs;
+      const chatId = chat.id;
+
+      if (chatId.equals(777000) || chatId.equals(myChatId)) {
         continue;
       } else if (chatId > 0) {
         msgs = await client.getMessages(chatId, {
@@ -167,7 +166,6 @@ export const findChat = async (req, res) => {
         }
       }
     }
-
   } catch (error) {
     res.status(500).json(error);
   }
@@ -199,7 +197,7 @@ export const getLatestChat = async (req, res) => {
 
     await client.connect({ onError: (err) => console.log(err) });
 
-    async function eventPrint(event) {
+    async function eventPrint (event) {
       const message = event.message;
 
       // Checks if it's a private message (from user or bot)
