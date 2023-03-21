@@ -43,7 +43,7 @@ describe('POST /tele_user/', () => {
 
 describe('GET /tele_user/:phone_num', () => {
   it('should return correct user details', async () => {
-    const postBody = await request.post('/tele_user').send({
+    await request.post('/tele_user').send({
       phone_num: '+6512345678',
       api_id: 12345678,
       api_hash: 'Description 2',
