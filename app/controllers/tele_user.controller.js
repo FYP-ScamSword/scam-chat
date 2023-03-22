@@ -10,7 +10,8 @@ export const createUser = async (req, res) => {
     phone_num: req.body.phone_num,
     api_id: req.body.api_id,
     api_hash: req.body.api_hash,
-    session_id: req.body.session_id
+    session_id: req.body.session_id,
+    alias: req.body.alias
 
   });
   try {

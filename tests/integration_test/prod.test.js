@@ -33,7 +33,8 @@ describe('POST /tele_user/', () => {
       phone_num: '+6512345678',
       api_id: 12345678,
       api_hash: 'Description 2',
-      session_id: 'session id'
+      session_id: 'session id',
+      alias: 'Name'
     });
     expect(res.statusCode).toBe(201);
     expect(res.body.phone_num).toBe('+6512345678');
@@ -46,12 +47,14 @@ describe('GET /tele_user/:phone_num', () => {
       phone_num: '+6512345678',
       api_id: 12345678,
       api_hash: 'Description 2',
-      session_id: 'session id'
+      session_id: 'session id',
+      alias: 'Name'
     });
 
     const res = await request.get('/tele_user/+6512345678');
     expect(res.statusCode).toBe(200);
     expect(res.body[0].phone_num).toBe('+6512345678');
+    expect(res.body[0].alias).toBe('Name');
   });
 });
 

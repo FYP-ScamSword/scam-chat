@@ -18,7 +18,12 @@ const UserSchema = mongoose.Schema(
     session_id: {
       type: String,
       required: true
+    },
+    alias: {
+      type: String,
+      required: true
     }
+
   },
   { timestamps: true }
 );
