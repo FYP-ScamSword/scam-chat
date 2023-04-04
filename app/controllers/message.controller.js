@@ -9,7 +9,7 @@ import { StringSession } from 'telegram/sessions/index.js';
  * @param {*} date
  * @returns
  */
-function getTime(date) {
+function getTime (date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
 
