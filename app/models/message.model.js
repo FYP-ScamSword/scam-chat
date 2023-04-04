@@ -33,6 +33,9 @@ const MessageSchema = new mongoose.Schema(
     },
     time: {
       type: String
+    },
+    epoch: {
+      type: Number
     }
   },
   {

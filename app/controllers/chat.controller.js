@@ -139,7 +139,8 @@ export const findChat = async (req, res) => {
         const text = msg.text;
         const msgId = msg.id;
         const date = new Date(msg.date * 1000);
-        const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+        const formattedDate = date.toISOString().substring(0, 10);
+        // const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
         const formattedTime = getTime(date);
         let type = 0;
         const chatId = msg.chatId;
@@ -169,7 +170,8 @@ export const findChat = async (req, res) => {
             text,
             type,
             date: formattedDate,
-            time: formattedTime
+            time: formattedTime,
+            epoch: msg.date
           });
           try {
             const result = await message.save();

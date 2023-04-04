@@ -101,8 +101,9 @@ describe('POST /msg/createMessage', () => {
       sender_firstname: 'Charlotte',
       text: 'hi',
       type: 0,
-      date: '3/4/2023',
-      time: '6:21 PM'
+      date: '28/3/2023',
+      time: '4:27 PM',
+      epoch: 1679992035
     });
     expect(res.statusCode).toBe(201);
     expect(res.body.phone_num).toBe('+6512345678');
@@ -120,8 +121,9 @@ describe('GET /msg/get_msg/:phone_num/:chat_id/:msg_id', () => {
       sender_firstname: 'Charlotte',
       text: 'hi',
       type: 0,
-      date: '3/4/2023',
-      time: '6:21 PM'
+      date: '28/3/2023',
+      time: '4:27 PM',
+      epoch: 1679992035
     });
 
     const res = await request.get('/msg/get_msg/+6512345678/12345678910/1000');
