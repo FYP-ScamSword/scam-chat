@@ -316,3 +316,140 @@ export const updateChat = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+/**
+ * Refresh / Update Single Chat from Telegram
+ * @param {*} req
+ * @param {*} res
+ */
+export const refreshSingleChat = async (req, res) => {
+  try {
+    const user = await UserModel.find({
+      phone_num: req.params.phone_num
+    });
+
+    const userDetails = user[0];
+    const apiId = Number(userDetails.api_id);
+    const apiHash = String(userDetails.api_hash);
+    const sessionId = String(userDetails.session_id);
+
+    const session = new StringSession(sessionId);
+
+    const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
+
+    await client.connect({ onError: (err) => console.log(err) });
+
+    await client.getDialogs('me', {});
+
+    // single chat id
+    const chatId = req.params.chat_id;
+
+    const msgs = await client.getMessages(Number(chatId), {
+      limit: 100
+    });
+
+    // check if current chat already stored to db, by searching db by chatId
+    const chatIdQuery = await ChatModel.find({
+      phone_num: req.params.phone_num,
+      chat_id: chatId
+    });
+
+    console.log(chatIdQuery);
+    const totalMsgs = msgs.total;
+    // if not stored in db yet, save into db
+    if (isEmptyObject(chatIdQuery)) {
+      const sender = await msgs[0].getSender();
+
+      // const chatId = msgs[0].chatId;
+      const contact = await client.getParticipants(chatId, {});
+      const contactName = contact[0].firstName;
+      const latestMsg = msgs[0].text;
+      let type = 0;
+      const time = msgs[0].date;
+
+      if (Number(chatId) !== Number(sender.id)) {
+        type = 1;
+      }
+
+      const chat = new ChatModel({
+        phone_num: req.params.phone_num,
+        contact_name: contactName,
+        total_msgs: totalMsgs,
+        chat_id: chatId,
+        latest_message: latestMsg,
+        type,
+        time
+      });
+      try {
+        const result = await chat.save();
+        console.log(result);
+      } catch (error) {
+
+      }
+    } else if (totalMsgs !== chatIdQuery[0].total_msgs) {
+      console.log(chatIdQuery[0].total_msgs);
+      const time = msgs[0].date;
+      const latestMsg = msgs[0].text;
+      const sender = await msgs[0].getSender();
+      let type = 0;
+      if (Number(chatId) !== Number(sender.id)) {
+        type = 1;
+      }
+
+      await chatIdQuery[0].updateOne({ $set: { total_msgs: chatIdQuery[0].total_msgs, latest_message: latestMsg, type, time } });
+    }
+
+    for (const msg of msgs) {
+      const sender = await msg.getSender();
+      const senderUsername = await sender.username;
+      const senderId = msg.senderId;
+      const senderFirstName = sender.firstName;
+      const text = msg.text;
+      const msgId = msg.id;
+      const date = new Date(msg.date * 1000);
+      const formattedDate = date.toISOString().substring(0, 10);
+      // const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+      const formattedTime = getTime(date);
+      let type = 0;
+      const chatId = msg.chatId;
+
+      if (Number(chatId) !== Number(senderId)) {
+        type = 1;
+      }
+
+      // check if current message already stored in DB by both chatId & msgId
+      const messageId = await MessageModel.find({
+
+        msg_id: { $in: [msgId] },
+        chat_id: { $in: [chatId] }
+
+      });
+
+      console.log(messageId);
+      // if not stored yet, save to db.
+      if (isEmptyObject(messageId)) {
+        const message = new MessageModel({
+          phone_num: req.params.phone_num,
+          chat_id: chatId,
+          msg_id: msgId,
+          sender_username: senderUsername,
+          sender_id: senderId,
+          sender_firstname: senderFirstName,
+          text,
+          type,
+          date: formattedDate,
+          time: formattedTime,
+          epoch: msg.date
+        });
+
+        const result = await message.save();
+
+        console.log(result);
+      }
+    }
+
+    res.status(200).json('Chat updated!');
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

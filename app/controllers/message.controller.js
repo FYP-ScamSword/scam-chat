@@ -128,7 +128,7 @@ export const getMessagesByChatId = async (req, res) => {
         messages: { $reverseArray: '$messages' }
       }
     },
-    {$sort:{date:1}}
+    { $sort: { date: 1 } }
   ], function (err, result) {
     if (err) {
       console.log(err);
