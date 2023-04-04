@@ -9,7 +9,7 @@ import { StringSession } from 'telegram/sessions/index.js';
  * @param {*} date
  * @returns
  */
-function getTime (date) {
+function getTime(date) {
   let hours = date.getHours();
   let minutes = date.getMinutes();
 
@@ -128,7 +128,7 @@ export const getMessagesByChatId = async (req, res) => {
         messages: { $reverseArray: '$messages' }
       }
     },
-    {$sort:{date:1}}
+    { $sort: { date: 1 } }
   ], function (err, result) {
     if (err) {
       console.log(err);
