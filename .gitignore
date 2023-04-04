@@ -1,5 +1,9 @@
+# Environment variables
+*.env
+
+# Node
 package-lock.json
 /node_modules
-.env
-Output.txt
-.dockerignore
+
+# Typescript build
+/dist
