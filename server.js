@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import TeleRoute from './app/routes/tele_user.route.js';
 import ChatRoute from './app/routes/chat.route.js';
 import MessageRoute from './app/routes/message.route.js';
+import ChatListRoute from './app/routes/chat_list.route.js';
 
 const app = express();
 
@@ -36,5 +37,6 @@ app.get('/', (req, res) => {
 app.use('/tele_user', TeleRoute);
 app.use('/chat', ChatRoute);
 app.use('/msg', MessageRoute);
+app.use('/chat_list', ChatListRoute);
 
 export default app;
