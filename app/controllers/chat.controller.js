@@ -169,7 +169,8 @@ export const findChat = async (req, res) => {
             text,
             type,
             date: formattedDate,
-            time: formattedTime
+            time: formattedTime,
+            epoch: msg.date
           });
           try {
             const result = await message.save();

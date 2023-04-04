@@ -61,7 +61,8 @@ export const createMessage = async (req, res) => {
     text: req.body.text,
     type: req.body.type,
     date: req.body.date,
-    time: req.body.time
+    time: req.body.time,
+    epoch: req.body.epoch
   });
 
   try {
@@ -123,7 +124,7 @@ export const getMessagesByChatId = async (req, res) => {
         phone_num: '$_id.phone_num',
         chat_id: '$_id.chat_id',
         users: '$users',
-        date: '$_id.date',
+        epoch: '$_id.epoch',
         messages: { $reverseArray: '$messages' }
       }
     }
@@ -202,7 +203,8 @@ export const sendTele = async (req, res) => {
       text,
       type,
       date: formattedDate,
-      time: formattedTime
+      time: formattedTime,
+      epoch: msg.date
     });
 
     const result = await message.save();
