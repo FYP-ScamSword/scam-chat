@@ -1,4 +1,30 @@
 import MessageModel from '../models/message.model.js';
+import UserModel from '../models/tele_user.model.js';
+import ChatModel from '../models/chat.model.js';
+import { TelegramClient } from 'telegram';
+import { StringSession } from 'telegram/sessions/index.js';
+
+/**
+ * Converts js `Date` to 12-hour format
+ * @param {*} date
+ * @returns
+ */
+function getTime (date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // Check whether AM or PM
+  const newformat = hours >= 12 ? 'PM' : 'AM';
+
+  // Find current hour in AM-PM Format
+  hours = hours % 12;
+
+  // To display "0" as "12"
+  hours = hours || 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  return hours + ':' + minutes + ' ' + newformat;
+}
 
 /**
  * Retrieves a message uniquely identified by `phone_num`, `chat_id` and `msq_id`
@@ -108,4 +134,80 @@ export const getMessagesByChatId = async (req, res) => {
       res.status(200).json(result);
     }
   });
+};
+
+/**
+ * Post message to both telegram and our database chat.
+ * @param {*} req
+ * @param {*} res
+ */
+export const sendTele = async (req, res) => {
+  try {
+    // update chat API
+    const chatDetails = await ChatModel.findOne({
+      phone_num: { $in: [req.body.phone_num] },
+      chat_id: { $in: [req.body.chat_id] }
+    });
+    console.log(chatDetails);
+    await chatDetails.updateOne({ $set: { latest_message: req.body.text }, $inc: { total_msgs: 1 } });
+
+    // get tele_user API
+    const user = await UserModel.find({
+      phone_num: req.body.phone_num
+    });
+    console.log(user);
+    // configuring user details to connect to telegram API
+    const userDetails = user[0];
+    const apiId = Number(userDetails.api_id);
+    const apiHash = String(userDetails.api_hash);
+    const sessionId = String(userDetails.session_id);
+
+    const session = new StringSession(sessionId);
+
+    const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
+
+    // send to telegram
+    await client.connect({ onError: (err) => console.log(err) });
+    await client.getDialogs('me', {});
+    const chatId = req.body.chat_id;
+    await client.sendMessage(chatId, { message: req.body.text });
+
+    // pull last message from tele and post to DB
+    const msgs = await client.getMessages(chatId, {
+      limit: 1
+    });
+
+    console.log();
+    const msg = msgs[0];
+
+    const sender = await msg.getSender();
+    const senderUsername = await sender.username;
+    const senderId = msg.senderId;
+    const senderFirstName = sender.firstName;
+    const text = msg.text;
+    const msgId = msg.id;
+    const date = new Date(msg.date * 1000);
+    const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+    const formattedTime = getTime(date);
+    const type = 1;
+
+    client.disconnect();
+    const message = new MessageModel({
+      phone_num: req.body.phone_num,
+      chat_id: chatId,
+      msg_id: msgId,
+      sender_username: senderUsername,
+      sender_id: senderId,
+      sender_firstname: senderFirstName,
+      text,
+      type,
+      date: formattedDate,
+      time: formattedTime
+    });
+
+    const result = await message.save();
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json(error.toString());
+  }
 };

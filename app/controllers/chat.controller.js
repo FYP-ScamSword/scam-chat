@@ -82,12 +82,16 @@ export const findChat = async (req, res) => {
 
       // check if current chat already stored to db, by searching db by chatId
       const chatIdQuery = await ChatModel.find({
+        phone_num: req.params.phone_num,
         chat_id: chatId
       });
+
+      console.log(chatIdQuery);
+      const totalMsgs = msgs.total;
       // if not stored in db yet, save into db
       if (isEmptyObject(chatIdQuery)) {
         const sender = await msgs[0].getSender();
-        const totalMsgs = msgs.total;
+
         // const chatId = msgs[0].chatId;
         const contact = await client.getParticipants(chatId, {});
         const contactName = contact[0].firstName;
@@ -114,6 +118,17 @@ export const findChat = async (req, res) => {
         } catch (error) {
 
         }
+      } else if (totalMsgs !== chatIdQuery[0].total_msgs) {
+        console.log(chatIdQuery[0].total_msgs);
+        const time = msgs[0].date;
+        const latestMsg = msgs[0].text;
+        const sender = await msgs[0].getSender();
+        let type = 0;
+        if (Number(chatId) !== Number(sender.id)) {
+          type = 1;
+        }
+
+        await chatIdQuery[0].updateOne({ $set: { total_msgs: chatIdQuery[0].total_msgs, latest_message: latestMsg, type, time } });
       }
 
       for (const msg of msgs) {
@@ -167,10 +182,10 @@ export const findChat = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json(error.toString());
   }
-  // return 200 if everything gets posted
-  res.status(200).json();
+  // return 201 if everything gets posted
+  res.status(201).json();
 };
 
 /**
@@ -293,7 +308,7 @@ export const updateChat = async (req, res) => {
       chat_id: { $in: [req.params.chat_id] }
     });
     // console.log(chatDetails);
-    await chatDetails.updateOne({ $set: req.body });
+    await chatDetails.updateOne({ $set: { latest_message: req.body.text }, $inc: { total_msgs: 1 } });
     res.status(200).json('Chat updated!');
   } catch (error) {
     res.status(500).json(error);

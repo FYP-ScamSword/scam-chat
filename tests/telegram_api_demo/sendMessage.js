@@ -27,16 +27,22 @@ const sessionId = process.env.SESSION_ID;
 /* without string session, one would have to verify by logging in to telegram / getting telegram OTP everytime the code runs */
 const session = new StringSession(sessionId); // You should put your string session here
 const client = new TelegramClient(session, apiId, apiHash, {});
-const teleHandle = process.env.TELE_HANDLE;
+// const teleHandle = process.env.TELE_HANDLE;
 
 (async function run () {
   await client.connect(); // This assumes you have already authenticated with .start()
 
   // send a message to telegram handle
-  await client.sendMessage(teleHandle, { message: 'Hello!' });
+  await client.sendMessage('me', { message: 'Hello!' });
 
+  /***
+   * To send messages to a chatId, you need to load all the chats first
+   * Can be done through client.getDialogs('me', {})
+   */
+  await client.getDialogs('me', {});
   // ...but here I want markdown
-  await client.sendMessage(teleHandle, { message: 'Hello, **NAME**!!! \n\nfrom me~' }, { parseMode: 'md' });
+  const chatId = '1594602873';
+  await client.sendMessage(chatId, { message: 'Hello, **NAME**!!! \n\nfrom me~' }, { parseMode: 'md' });
 
   // ...and here I need HTML
   // await client.sendMessage('me', {message:'Hello, <i>world</i>!'}, {parseMode:'HTML'})

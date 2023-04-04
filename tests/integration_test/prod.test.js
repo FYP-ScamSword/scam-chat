@@ -90,9 +90,9 @@ describe('GET /chat/:phone_num/:chat_id', () => {
   });
 });
 
-describe('POST /msg', () => {
+describe('POST /msg/createMessage', () => {
   it('should return created 201 status', async () => {
-    const res = await request.post('/msg').send({
+    const res = await request.post('/msg/createMessage').send({
       phone_num: '+6512345678',
       chat_id: '12345678910',
       msg_id: '1000',
@@ -111,7 +111,7 @@ describe('POST /msg', () => {
 
 describe('GET /msg/get_msg/:phone_num/:chat_id/:msg_id', () => {
   it('should return correct msg details', async () => {
-    await request.post('/msg').send({
+    await request.post('/msg/createMessage').send({
       phone_num: '+6512345678',
       chat_id: '12345678910',
       msg_id: '1000',
