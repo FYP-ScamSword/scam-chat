@@ -124,7 +124,7 @@ export const getMessagesByChatId = async (req, res) => {
         phone_num: '$_id.phone_num',
         chat_id: '$_id.chat_id',
         users: '$users',
-        epoch: '$_id.epoch',
+        date: '$_id.date',
         messages: { $reverseArray: '$messages' }
       }
     }
