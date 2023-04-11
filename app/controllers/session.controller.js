@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 
 import ActiveSessionModel from '../models/active_session.model.js';
 import ArchivedSessionModel from '../models/archived_session.model.js';
@@ -11,7 +11,6 @@ const RELEASE_TIMEOUT = process.env.RELEASE_DURATION;
 /** Time in seconds after which a session is to be archived */
 const ARCHIVE_TIMEOUT = process.env.ARCHIVE_DURATION;
 
-
 const sessionRefresh = async () => {
   const sessions = await ActiveSessionModel.find();
 
@@ -20,7 +19,7 @@ const sessionRefresh = async () => {
   sessions.forEach((session) => {
     validateSession(session) && validateUserSession(session);
   });
-}
+};
 
 /**
  * Retrieve all active sessions
@@ -48,7 +47,7 @@ export const getSessionsAvailable = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-}
+};
 
 /**
  * Retrieve active sessions for a given user
@@ -79,7 +78,6 @@ const validateSession = async (session) => {
   }
 };
 
-
 /**
  * Release a session to the pool of available sessions, for other users to access
  */
@@ -104,10 +102,10 @@ const archiveSession = async (session) => {
   const { phone_num, chat_id, last_msg_time } = session;
 
   const toArchive = {
-    phone_num: phone_num,
-    chat_id: chat_id,
-    last_msg_time: last_msg_time
-  }
+    phone_num,
+    chat_id,
+    last_msg_time
+  };
 
   ArchivedSessionModel.create(toArchive, (err, res) => {
     if (err) {
