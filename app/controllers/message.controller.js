@@ -3,6 +3,8 @@ import CanaryAccountModel from '../models/canary_account.model.js';
 import ChatModel from '../models/chat.model.js';
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
+import moment from 'moment-timezone';
+moment().tz('Asia/Singapore').format();
 
 /**
  * Converts js `Date` to 12-hour format
@@ -189,7 +191,7 @@ export const sendTele = async (req, res) => {
     const text = msg.text;
     const msgId = msg.id;
     const date = new Date(msg.date * 1000);
-    const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+    const formattedDate = date.toISOString().substring(0, 10);
     const formattedTime = getTime(date);
     const type = 1;
 
