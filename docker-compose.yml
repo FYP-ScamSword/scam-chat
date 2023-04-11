@@ -7,7 +7,7 @@ services:
 ####################################
   scam_chat:
     build:
-      context: ./scam_chat
+      context: ./
       dockerfile: Dockerfile
     restart: always
     env_file:
