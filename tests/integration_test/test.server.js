@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 // routes
-import TeleRoute from '../../app/routes/tele_user.route.js';
+import TeleRoute from '../../app/routes/canary_account.route.js';
 import ChatRoute from '../../app/routes/chat.route.js';
 import MessageRoute from '../../app/routes/message.route.js';
 
