@@ -27,11 +27,14 @@ const CONNECTION = process.env.MONGODB_CONNECTION;
 
 mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Listening at Port ${PORT}`)))
+  .then(() => app.listen(PORT, () => console.log(`Scam-chat backend is listening on port: ${PORT}`)))
   .catch((error) => console.log(`${error} did not connect`));
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Scam Chat is healthy.' });
+app.get('/health', (req, res) => {
+  res.json({
+    message: 'Service deployed successfully!',
+    timestamp: new Date().toUTCString()
+  });
 });
 
 app.use('/tele_user', TeleRoute);
