@@ -189,7 +189,7 @@ export const sendTele = async (req, res) => {
     const text = msg.text;
     const msgId = msg.id;
     const date = new Date(msg.date * 1000);
-    const formattedDate = date.getUTCDate() + '/' + (date.getUTCMonth() + 1) + '/' + date.getUTCFullYear();
+    const formattedDate = date.toISOString().substring(0, 10);
     const formattedTime = getTime(date);
     const type = 1;
 
