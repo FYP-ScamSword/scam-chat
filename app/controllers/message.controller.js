@@ -3,6 +3,8 @@ import UserModel from '../models/tele_user.model.js';
 import ChatModel from '../models/chat.model.js';
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
+import moment from 'moment-timezone';
+moment().tz("Asia/Singapore").format();
 
 /**
  * Converts js `Date` to 12-hour format
