@@ -5,7 +5,7 @@ import UserModel from '../models/tele_user.model.js';
 import MessageModel from '../models/message.model.js';
 import ChatModel from '../models/chat.model.js';
 import moment from 'moment-timezone';
-moment().tz("Asia/Singapore").format();
+moment().tz('Asia/Singapore').format();
 
 /**
  * Checks if an object is empty

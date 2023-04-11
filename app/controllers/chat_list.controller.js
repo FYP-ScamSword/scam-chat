@@ -3,7 +3,7 @@ import UserModel from '../models/tele_user.model.js';
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
 import moment from 'moment-timezone';
-moment().tz("Asia/Singapore").format();
+moment().tz('Asia/Singapore').format();
 
 /**
  * Get list of chats
