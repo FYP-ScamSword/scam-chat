@@ -51,7 +51,7 @@ MONGODB_CONNECTION=""
 PORT=8081
 ```
 
-3. Start the application locally with `npm run start`.
+3. Start the application locally with `npm run start`. Alternatively, you can also build and run the projectwith Docker using the provided `Dockerfile` and `docker-compose.yml`
 
 ## Roadmap
 
