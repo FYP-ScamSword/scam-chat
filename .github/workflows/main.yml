@@ -32,6 +32,11 @@ jobs:
         working-directory: .
 
     steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: npm install
+
     - name: Create env file
       working-directory: .
       run: |
