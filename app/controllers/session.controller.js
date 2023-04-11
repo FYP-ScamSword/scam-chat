@@ -17,7 +17,7 @@ const sessionRefresh = async () => {
   // TODO: Update last_msg_time for each session
 
   sessions.forEach((session) => {
-    validateSession(session) && validateUserSession(session);
+    validateSession(session)
   });
 };
 
@@ -99,12 +99,12 @@ const archiveSession = async (session) => {
     }
   });
 
-  const { phone_num, chat_id, last_msg_time } = session;
+  const { phone_num: phoneNum, chat_id: chatId, last_msg_time: lastMsgTime } = session;
 
   const toArchive = {
-    phone_num,
-    chat_id,
-    last_msg_time
+    phone_num: phoneNum,
+    chat_id: chatId,
+    last_msg_time: lastMsgTime
   };
 
   ArchivedSessionModel.create(toArchive, (err, res) => {
