@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
+    "lint": "npx eslint . --fix",
     "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --testTimeout=5000 --forceExit"
   },
   "keywords": [

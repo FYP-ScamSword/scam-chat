@@ -33,9 +33,8 @@ mongoose
 app.get('/health', (req, res) => {
   res.json({
     message: 'Service deployed successfully!',
-    timestamp: new Date().toUTCString(),
+    timestamp: new Date().toUTCString()
   });
-
 });
 
 app.use('/tele_user', TeleRoute);
