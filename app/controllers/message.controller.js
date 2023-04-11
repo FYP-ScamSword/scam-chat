@@ -1,5 +1,5 @@
 import MessageModel from '../models/message.model.js';
-import UserModel from '../models/tele_user.model.js';
+import CanaryAccountModel from '../models/canary_account.model.js';
 import ChatModel from '../models/chat.model.js';
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
@@ -156,15 +156,15 @@ export const sendTele = async (req, res) => {
     await chatDetails.updateOne({ $set: { latest_message: req.body.text }, $inc: { total_msgs: 1 } });
 
     // get tele_user API
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.body.phone_num
     });
-    console.log(user);
+    console.log(canaryAcc);
     // configuring user details to connect to telegram API
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
 
     const session = new StringSession(sessionId);
 

@@ -1,19 +1,20 @@
 import mongoose from 'mongoose';
 
-const ChatListSchema = new mongoose.Schema(
-  {
-    phone_num: {
-      type: String,
-      required: true
+/**
+ * Represents a list of available chats for a given canary account (identified
+ * by `phone_num`)
+ */
+const ChatListModel = mongoose.model('ChatList',
+  new mongoose.Schema(
+    {
+      phone_num: {
+        type: String,
+        required: true
+      },
+      chat_ids: {
+        type: Array
+      }
     },
-    chat_ids: {
-      type: Array
-    }
-  },
-  {
-    timestamps: true
-  }
-);
+    { timestamps: true }));
 
-const ChatListModel = mongoose.model('ChatList', ChatListSchema);
 export default ChatListModel;

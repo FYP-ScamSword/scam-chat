@@ -1,7 +1,7 @@
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
 import { NewMessage } from 'telegram/events/index.js';
-import UserModel from '../models/tele_user.model.js';
+import CanaryAccountModel from '../models/canary_account.model.js';
 import MessageModel from '../models/message.model.js';
 import ChatModel from '../models/chat.model.js';
 import moment from 'moment-timezone';
@@ -49,14 +49,14 @@ function getTime (date) {
 export const findChat = async (req, res) => {
   try {
     // retrieve user details from DB to login to tele
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
     });
 
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
 
     const session = new StringSession(sessionId);
 
@@ -200,14 +200,14 @@ export const findChat = async (req, res) => {
  */
 export const getLatestChat = async (req, res) => {
   try {
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       members: { $in: [req.params.phone_num] }
     });
 
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
     // const teleHandle = req.params.tele_handle;
 
     const session = new StringSession(sessionId);
@@ -235,7 +235,7 @@ export const getLatestChat = async (req, res) => {
     }
     // adds an event handler for new messages
     client.addEventHandler(eventPrint, new NewMessage({}));
-    res.status(200).json(userDetails);
+    res.status(200).json(canaryAccDetails);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -326,14 +326,14 @@ export const updateChat = async (req, res) => {
  */
 export const refreshSingleChat = async (req, res) => {
   try {
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
     });
 
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
 
     const session = new StringSession(sessionId);
 

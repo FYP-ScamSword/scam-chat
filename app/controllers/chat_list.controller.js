@@ -1,5 +1,5 @@
 import ChatListModel from '../models/chat_list.model.js';
-import UserModel from '../models/tele_user.model.js';
+import CanaryAccountModel from '../models/canary_account.model.js';
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
 import moment from 'moment-timezone';
@@ -28,14 +28,14 @@ export const listChat = async (req, res) => {
  */
 export const createChatList = async (req, res) => {
   try {
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
     });
 
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
 
     const session = new StringSession(sessionId);
 
@@ -82,14 +82,14 @@ export const createChatList = async (req, res) => {
  */
 export const updateChatList = async (req, res) => {
   try {
-    const user = await UserModel.find({
+    const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
     });
 
-    const userDetails = user[0];
-    const apiId = Number(userDetails.api_id);
-    const apiHash = String(userDetails.api_hash);
-    const sessionId = String(userDetails.session_id);
+    const canaryAccDetails = canaryAcc[0];
+    const apiId = Number(canaryAccDetails.api_id);
+    const apiHash = String(canaryAccDetails.api_hash);
+    const sessionId = String(canaryAccDetails.session_id);
 
     const session = new StringSession(sessionId);
 

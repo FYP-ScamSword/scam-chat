@@ -1,34 +1,23 @@
 import mongoose from 'mongoose';
 
-const ChatSchema = new mongoose.Schema(
-  {
-    phone_num: {
-      type: String,
-      required: true
+/**
+ * Representa a single chat between a canary account (identified by `phone_num`)
+ * and a telegram user (identified by `chat_id`)
+ */
+const ChatModel = mongoose.model('Chat',
+  new mongoose.Schema(
+    {
+      phone_num: {
+        type: String,
+        required: true
+      },
+      chat_id: String,
+      contact_name: String,
+      total_msgs: Number,
+      latest_message: String,
+      type: Number,
+      time: Number
     },
-    chat_id: {
-      type: String
-    },
-    contact_name: {
-      type: String
-    },
-    total_msgs: {
-      type: Number
-    },
-    latest_message: {
-      type: String
-    },
-    type: {
-      type: Number
-    },
-    time: {
-      type: Number
-    }
-  },
-  {
-    timestamps: true
-  }
-);
+    { timestamps: true }));
 
-const ChatModel = mongoose.model('Chat', ChatSchema);
 export default ChatModel;
