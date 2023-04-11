@@ -17,7 +17,7 @@ const sessionRefresh = async () => {
   // TODO: Update last_msg_time for each session
 
   sessions.forEach((session) => {
-    validateSession(session)
+    validateSession(session);
   });
 };
 
