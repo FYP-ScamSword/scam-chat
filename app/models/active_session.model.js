@@ -16,12 +16,12 @@ const ActiveSessionModel = mongoose.model('Active_session',
         type: String,
         required: true
       },
-      last_sync: {
+      last_msg_time: {
         type: Date,
         required: true
       },
       awaiting_scammer: {
-        Boolean,
+        type: Boolean,
         required: true
       }
     }));
