@@ -10,3 +10,6 @@ COPY . .
 
 EXPOSE 8081
 CMD [ "node", "server.js" ]
+
+ENV TZ=Asia/Singapore
+
