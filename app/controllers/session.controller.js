@@ -68,9 +68,9 @@ export const getSessionsByUserId = async (req, res) => {
  * if time difference exceeds `RELEASE_TIMEOUT`, the session is released.
  */
 const validateSession = async (session) => {
-  const { last_msg_time } = session;
+  const { last_msg_time: lastMsgTime } = session;
   const currentTime = new Date();
-  const diff = (currentTime.getTime() - last_msg_time.getTime()) / 1000;
+  const diff = (currentTime.getTime() - lastMsgTime.getTime()) / 1000;
   if (diff > ARCHIVE_TIMEOUT) {
     await archiveSession(session);
   } else if (diff > RELEASE_TIMEOUT) {
