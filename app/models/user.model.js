@@ -1,30 +1,98 @@
 import mongoose from 'mongoose';
 
-const CanaryAccModel = mongoose.model('Canary_account',
+const UserModel = mongoose.model('User',
   new mongoose.Schema(
     {
-      phone_num: {
+      uinfin: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      partialuinfin: {
+        type: String
+      },
+      uuid: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      name: {
         type: String,
         required: true
       },
-      api_id: {
-        type: Number,
+      sex: {
+        type: {
+          code: String,
+          label: String
+        },
         required: true
       },
-      api_hash: {
+      dob: {
         type: String,
         required: true
       },
-      session_id: {
+      residentialstatus: {
+        type: {
+          code: String,
+          label: String
+        },
+        required: true
+      },
+      nationality: {
+        type: {
+          code: String,
+          label: String
+        },
+        required: true
+      },
+      birthcountry: {
+        type: {
+          code: String,
+          label: String
+        },
+        required: true
+      },
+      mobileno: {
+        areacode: {
+          type: String
+        },
+        nbr: {
+          type: String
+        },
+        prefix: {
+          type: String
+        }
+      },
+      email: {
         type: String,
         required: true
       },
-      alias: {
-        type: String,
-        required: true
+      regadd: {
+        block: {
+          type: String
+        },
+        building: {
+          type: String
+        },
+        street: {
+          type: String
+        },
+        floor: {
+          type: Number
+        },
+        unit: {
+          type: Number
+        },
+        country: {
+          type: {
+            code: String,
+            label: String
+          }
+        },
+        postal: {
+          type: String
+        }
       }
+    }));
 
-    },
-    { timestamps: true }));
-
-export default CanaryAccModel;
+export default UserModel;
