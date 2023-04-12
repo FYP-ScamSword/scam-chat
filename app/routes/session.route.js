@@ -3,10 +3,10 @@ import { getSessions, getSessionsAvailable, getSessionsByUserId, createSession }
 
 const router = express.Router();
 
-router.get('/sessions/all', getSessions);
-router.get('/sessions/open', getSessionsAvailable);
-router.get('/sessions/:user_id', getSessionsByUserId);
+router.get('/all', getSessions);
+router.get('/open', getSessionsAvailable);
+router.get('/:user_id', getSessionsByUserId);
 
-router.post('/sessions', createSession);
+router.post('/', createSession);
 
 export default router;
