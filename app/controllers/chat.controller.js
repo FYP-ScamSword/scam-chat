@@ -265,7 +265,7 @@ export const getAllChatsByNumber = async (req, res) => {
  */
 export const getChatByNumberAndId = async (req, res) => {
   try {
-    const chatDetails = await ChatModel.find({
+    const chatDetails = await ChatModel.findOne({
       phone_num: { $in: [req.params.phone_num] },
       chat_id: { $in: [req.params.chat_id] }
 
