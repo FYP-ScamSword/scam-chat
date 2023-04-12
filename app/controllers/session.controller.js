@@ -64,6 +64,22 @@ export const getSessionsByUserId = async (req, res) => {
 };
 
 /**
+ * Create and save a new active session
+ * @param {*} req
+ * @param {*} res
+ */
+export const createSession = async (req, res) => {
+  const newSession = new ActiveSessionModel(req.body);
+  newSession.save((err, session) => {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      res.status(201).json(session);
+    }
+  });
+};
+
+/**
  * Performs validation on a session. If time difference exceeds `ARCHIVE_TIMEOUT`, the session is archived. Otherwise,
  * if time difference exceeds `RELEASE_TIMEOUT`, the session is released.
  */
