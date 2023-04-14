@@ -195,7 +195,7 @@ export const sendTele = async (req, res) => {
     const formattedTime = getTime(date);
     const type = 1;
 
-    client.disconnect();
+    // client.disconnect();
     const message = new MessageModel({
       phone_num: req.body.phone_num,
       chat_id: chatId,
