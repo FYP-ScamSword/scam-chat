@@ -6,7 +6,7 @@ router.post('/get_msgs/:phone_num', findChat);
 
 router.post('/createchat', createChat);
 
-router.get('/new_msgs/:phone_num', getLatestChat);
+router.get('/new_msgs/:phone_num/:chat_id', getLatestChat);
 
 router.get('/get_by_id/:phone_num/:chat_id', getChatByNumberAndId);
 

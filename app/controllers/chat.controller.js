@@ -193,7 +193,6 @@ export const findChat = async (req, res) => {
 };
 
 /**
- * TODO: Not fully implemented yet
  * Polling function that retrieves latest messages from telegram server
  * @param {*} req
  * @param {*} res
@@ -201,7 +200,7 @@ export const findChat = async (req, res) => {
 export const getLatestChat = async (req, res) => {
   try {
     const canaryAcc = await CanaryAccountModel.find({
-      members: { $in: [req.params.phone_num] }
+      phone_num: req.params.phone_num
     });
 
     const canaryAccDetails = canaryAcc[0];
@@ -214,28 +213,59 @@ export const getLatestChat = async (req, res) => {
 
     const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
 
-    await client.connect({ onError: (err) => console.log(err) });
-
     async function eventPrint (event) {
-      const message = event.message;
+      const msg = event.message;
 
       // Checks if it's a private message (from user or bot)
-      if (event.isPrivate) {
+      if (event.isPrivate && msg.senderId.equals(req.params.chat_id)) {
+        const msg = event.message;
         // prints sender id
-        console.log(message.senderId);
-        // read message
-        if (message.text === 'hello') {
-          const sender = await message.getSender();
-          console.log('sender is', sender);
-          await client.sendMessage(sender, {
-            message: `hi your id is ${message.senderId}`
-          });
-        }
+        console.log(msg.senderId);
+
+        const sender = await msg.getSender();
+        const senderUsername = await sender.username;
+        const senderId = msg.senderId;
+        const senderFirstName = sender.firstName;
+        const text = msg.text;
+        const msgId = msg.id;
+        const date = new Date(msg.date * 1000);
+        const formattedDate = date.toISOString().substring(0, 10);
+        const formattedTime = getTime(date);
+        const type = 1;
+
+        const message = new MessageModel({
+          phone_num: req.params.phone_num,
+          chat_id: req.params.chat_id,
+          msg_id: msgId,
+          sender_username: senderUsername,
+          sender_id: senderId,
+          sender_firstname: senderFirstName,
+          text,
+          type,
+          date: formattedDate,
+          time: formattedTime,
+          epoch: msg.date
+        });
+
+        const result = await message.save();
+        console.log(result);
+
+        const chatDetails = await ChatModel.findOne({
+          phone_num: { $in: [req.params.phone_num] },
+          chat_id: { $in: [req.params.chat_id] }
+        });
+
+        await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
       }
     }
-    // adds an event handler for new messages
-    client.addEventHandler(eventPrint, new NewMessage({}));
-    res.status(200).json(canaryAccDetails);
+    (async function run () {
+      await client.connect(); // This assumes you have already authenticated with .start()
+
+      await client.getMe();
+      // adds an event handler for new messages
+      client.addEventHandler(eventPrint, new NewMessage({}));
+    })();
+    // res.status(200).json(canaryAccDetails);
   } catch (error) {
     res.status(500).json(error);
   }
