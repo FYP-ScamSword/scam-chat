@@ -198,6 +198,8 @@ export const findChat = async (req, res) => {
  * @param {*} res
  */
 export const getLatestChat = async (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
   try {
     const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
@@ -256,6 +258,9 @@ export const getLatestChat = async (req, res) => {
         });
 
         await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
+
+        res.write('event: message\n');
+        res.write(`data: ${JSON.stringify({ msg_id: msgId, text, type, time: formattedTime })}\n\n`);
       }
     }
     (async function run () {
