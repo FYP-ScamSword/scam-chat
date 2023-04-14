@@ -86,7 +86,7 @@ describe('GET /chat/:phone_num/:chat_id', () => {
 
     const res = await request.get('/chat/get_by_id/+6512345678/12345678910');
     expect(res.statusCode).toBe(200);
-    expect(res.body[0].contact_name).toBe('Hello');
+    expect(res.body.contact_name).toBe('Hello');
   });
 });
 
