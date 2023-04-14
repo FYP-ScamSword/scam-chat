@@ -231,7 +231,7 @@ export const getLatestChat = async (req, res) => {
         const date = new Date(msg.date * 1000);
         const formattedDate = date.toISOString().substring(0, 10);
         const formattedTime = getTime(date);
-        const type = 1;
+        const type = 0;
 
         const message = new MessageModel({
           phone_num: req.params.phone_num,
