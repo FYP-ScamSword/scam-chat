@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 
 import ActiveSessionModel from '../models/active_session.model.js';
 import ArchivedSessionModel from '../models/archived_session.model.js';
+import { checkUserExists } from '../utils/user.util.js';
 
 dotenv.config();
 
@@ -52,13 +53,56 @@ export const getSessionsAvailable = async (req, res) => {
 /**
  * Retrieve active sessions for a given user
 */
-export const getSessionsByUserId = async (req, res) => {
+export const getSessionsByUsername = async (req, res) => {
   sessionRefresh();
 
   try {
-    const sessions = await ActiveSessionModel.find({ user_id: req.params.user_id });
+    const sessions = await ActiveSessionModel.find({ user_id: req.params.username });
     res.status(200).json(sessions);
   } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+/**
+ * Assigns an available session to a user with the provided user ID.
+ * If an available session exists, the session's user ID is updated to the provided user ID
+ * and the updated session is returned in the response.
+ * If no available sessions exist, a 404 error is returned.
+ *
+ * @param {*} req - The HTTP request object containing the user ID as a URL parameter.
+ * @param {*} res - The HTTP response object used to send the response.
+ */
+export const assignSessionByUsername = async (req, res) => {
+  sessionRefresh();
+
+  const userExist = await checkUserExists(req.params.username);
+  if (!userExist) {
+    res.status(403).json({ message: 'User does not exist' });
+    return;
+  }
+
+  try {
+    let session = await ActiveSessionModel.find({ user_id: null })
+      .sort({ last_msg_time: -1 })
+      .limit(1);
+
+    if (session.length === 0) {
+      res.status(404).json({ message: 'No available session' });
+      return;
+    }
+
+    session = session[0];
+
+    await ActiveSessionModel.updateOne(
+      { _id: session._id },
+      { $set: { user_id: req.params.username } }
+    );
+
+    session.user_id = req.params.username;
+    res.json(session);
+  } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 };

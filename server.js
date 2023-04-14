@@ -9,6 +9,7 @@ import TeleRoute from './app/routes/canary_account.route.js';
 import ChatRoute from './app/routes/chat.route.js';
 import MessageRoute from './app/routes/message.route.js';
 import ChatListRoute from './app/routes/chat_list.route.js';
+import SessionRoute from './app/routes/session.route.js';
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.use('/tele_user', TeleRoute);
 app.use('/chat', ChatRoute);
 app.use('/msg', MessageRoute);
 app.use('/chat_list', ChatListRoute);
+app.use('/sessions', SessionRoute);
 
 export default app;

@@ -1,12 +1,13 @@
 import express from 'express';
-import { getSessions, getSessionsAvailable, getSessionsByUserId, createSession } from '../controllers/session.controller.js';
+import { getSessions, getSessionsAvailable, getSessionsByUsername, assignSessionByUsername, createSession } from '../controllers/session.controller.js';
 
 const router = express.Router();
 
-router.get('/sessions/all', getSessions);
-router.get('/sessions/open', getSessionsAvailable);
-router.get('/sessions/:user_id', getSessionsByUserId);
+router.get('/all', getSessions);
+router.get('/open', getSessionsAvailable);
+router.get('/:username', getSessionsByUsername);
 
-router.post('/sessions', createSession);
+router.post('/', createSession);
+router.post('/:username', assignSessionByUsername);
 
 export default router;
