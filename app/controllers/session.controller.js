@@ -53,11 +53,11 @@ export const getSessionsAvailable = async (req, res) => {
 /**
  * Retrieve active sessions for a given user
 */
-export const getSessionsByUserId = async (req, res) => {
+export const getSessionsByUsername = async (req, res) => {
   sessionRefresh();
 
   try {
-    const sessions = await ActiveSessionModel.find({ user_id: req.params.user_id });
+    const sessions = await ActiveSessionModel.find({ user_id: req.params.username });
     res.status(200).json(sessions);
   } catch (error) {
     res.status(500).json(error);
@@ -73,12 +73,13 @@ export const getSessionsByUserId = async (req, res) => {
  * @param {*} req - The HTTP request object containing the user ID as a URL parameter.
  * @param {*} res - The HTTP response object used to send the response.
  */
-export const assignSessionByUserId = async (req, res) => {
+export const assignSessionByUsername = async (req, res) => {
   sessionRefresh();
 
-  const userExist = await checkUserExists(req.params.user_id);
+  const userExist = await checkUserExists(req.params.username);
   if (!userExist) {
-    res.status(403).json({ message: 'Invalid User ID' });
+    res.status(403).json({ message: 'User does not exist' });
+    return;
   }
 
   try {
@@ -95,10 +96,10 @@ export const assignSessionByUserId = async (req, res) => {
 
     await ActiveSessionModel.updateOne(
       { _id: session._id },
-      { $set: { user_id: req.params.user_id } }
+      { $set: { user_id: req.params.username } }
     );
 
-    session.user_id = req.params.user_id;
+    session.user_id = req.params.username;
     res.json(session);
   } catch (error) {
     console.log(error);
