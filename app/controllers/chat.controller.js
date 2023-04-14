@@ -213,7 +213,6 @@ export const getLatestChat = async (req, res) => {
 
     const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
 
-    
     async function eventPrint (event) {
       const msg = event.message;
 
@@ -222,7 +221,7 @@ export const getLatestChat = async (req, res) => {
         const msg = event.message;
         // prints sender id
         console.log(msg.senderId);
-        
+
         const sender = await msg.getSender();
         const senderUsername = await sender.username;
         const senderId = msg.senderId;
@@ -234,7 +233,6 @@ export const getLatestChat = async (req, res) => {
         const formattedTime = getTime(date);
         const type = 1;
 
-   
         const message = new MessageModel({
           phone_num: req.params.phone_num,
           chat_id: req.params.chat_id,
@@ -256,15 +254,13 @@ export const getLatestChat = async (req, res) => {
           phone_num: { $in: [req.params.phone_num] },
           chat_id: { $in: [req.params.chat_id] }
         });
-     
+
         await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
-     
-       
       }
     }
     (async function run () {
       await client.connect(); // This assumes you have already authenticated with .start()
-    
+
       await client.getMe();
       // adds an event handler for new messages
       client.addEventHandler(eventPrint, new NewMessage({}));
