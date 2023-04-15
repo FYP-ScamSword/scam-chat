@@ -5,6 +5,8 @@ import CanaryAccountModel from '../models/canary_account.model.js';
 import MessageModel from '../models/message.model.js';
 import ChatModel from '../models/chat.model.js';
 import moment from 'moment-timezone';
+import { getClient } from '../utils/client_pool.util.js';
+
 moment().tz('Asia/Singapore').format();
 
 /**
@@ -209,11 +211,8 @@ export const getLatestChat = async (req, res) => {
     const apiId = Number(canaryAccDetails.api_id);
     const apiHash = String(canaryAccDetails.api_hash);
     const sessionId = String(canaryAccDetails.session_id);
-    // const teleHandle = req.params.tele_handle;
 
-    const session = new StringSession(sessionId);
-
-    const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
+    const client = await getClient(sessionId, apiId, apiHash);
 
     async function eventPrint (event) {
       const msg = event.message;

@@ -1,9 +1,8 @@
 import MessageModel from '../models/message.model.js';
 import CanaryAccountModel from '../models/canary_account.model.js';
 import ChatModel from '../models/chat.model.js';
-import { TelegramClient } from 'telegram';
-import { StringSession } from 'telegram/sessions/index.js';
 import moment from 'moment-timezone';
+import { getClient } from '../utils/client_pool.util.js';
 moment().tz('Asia/Singapore').format();
 
 /**
@@ -166,9 +165,7 @@ export const sendTele = async (req, res) => {
     const apiHash = String(canaryAccDetails.api_hash);
     const sessionId = String(canaryAccDetails.session_id);
 
-    const session = new StringSession(sessionId);
-
-    const client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
+    const client = await getClient(sessionId, apiId, apiHash);
 
     // send to telegram
     await client.connect({ onError: (err) => console.log(err) });
