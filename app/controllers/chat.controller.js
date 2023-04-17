@@ -248,18 +248,24 @@ export const getLatestChat = async (req, res) => {
           epoch: msg.date
         });
 
-        const result = await message.save();
-        console.log(result);
+        try {
+          const result = await message.save();
+          console.log(result);
 
-        const chatDetails = await ChatModel.findOne({
-          phone_num: { $in: [req.params.phone_num] },
-          chat_id: { $in: [req.params.chat_id] }
-        });
+          const chatDetails = await ChatModel.findOne({
+            phone_num: { $in: [req.params.phone_num] },
+            chat_id: { $in: [req.params.chat_id] }
+          });
 
-        await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
+          await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
 
-        res.write('event: message\n');
-        res.write(`data: ${JSON.stringify({ msg_id: msgId, text, type, time: formattedTime })}\n\n`);
+          res.write('event: message\n');
+          res.write(`data: ${JSON.stringify({ msg_id: msgId, text, type, time: formattedTime })}\n\n`);
+        } catch (error) {
+          if (error.code === 11000) {
+            console.log('409');
+          }
+        }
       }
     }
     (async function run () {
