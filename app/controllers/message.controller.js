@@ -72,7 +72,7 @@ export const createMessage = async (req, res) => {
     res.status(201).json(result);
   } catch (error) {
     if (error.code === 11000) {
-      console.log('409');
+      res.status(409).json(error);
     } else {
       res.status(500).json(error);
     }
