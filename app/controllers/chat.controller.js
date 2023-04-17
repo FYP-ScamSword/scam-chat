@@ -202,6 +202,7 @@ export const findChat = async (req, res) => {
 export const getLatestChat = async (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
+
   try {
     const canaryAcc = await CanaryAccountModel.find({
       phone_num: req.params.phone_num
@@ -214,6 +215,10 @@ export const getLatestChat = async (req, res) => {
 
     const client = await getClient(sessionId, apiId, apiHash);
 
+    req.on('close', () => {
+      client.removeEventHandler(eventPrint, new NewMessage({}));
+      client.disconnect();
+    });
     async function eventPrint (event) {
       const msg = event.message;
 
@@ -248,6 +253,8 @@ export const getLatestChat = async (req, res) => {
           epoch: msg.date
         });
 
+        res.write('event: message\n');
+        res.write(`data: ${JSON.stringify({ msg_id: msgId, text, type, time: formattedTime })}\n\n`);
         try {
           const result = await message.save();
           console.log(result);
@@ -258,9 +265,6 @@ export const getLatestChat = async (req, res) => {
           });
 
           await chatDetails.updateOne({ $set: { latest_message: text }, $inc: { total_msgs: 1 } });
-
-          res.write('event: message\n');
-          res.write(`data: ${JSON.stringify({ msg_id: msgId, text, type, time: formattedTime })}\n\n`);
         } catch (error) {
           if (error.code === 11000) {
             console.log('409');
