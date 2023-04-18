@@ -71,7 +71,11 @@ export const createMessage = async (req, res) => {
     console.log(result);
     res.status(201).json(result);
   } catch (error) {
-    res.status(500).json(error);
+    if (error.code === 11000) {
+      res.status(409).json(error);
+    } else {
+      res.status(500).json(error);
+    }
   }
 };
 
@@ -171,20 +175,16 @@ export const sendTele = async (req, res) => {
     await client.connect({ onError: (err) => console.log(err) });
     await client.getDialogs('me', {});
     const chatId = req.body.chat_id;
-    await client.sendMessage(chatId, { message: req.body.text });
-
+    const msg = await client.sendMessage(chatId, { message: req.body.text });
+    console.log(msg);
     // pull last message from tele and post to DB
-    const msgs = await client.getMessages(chatId, {
-      limit: 1
-    });
+    const contact = await client.getParticipants('me', {});
 
-    console.log();
-    const msg = msgs[0];
+    const myContact = contact[0];
 
-    const sender = await msg.getSender();
-    const senderUsername = await sender.username;
-    const senderId = msg.senderId;
-    const senderFirstName = sender.firstName;
+    const senderUsername = myContact.username;
+    const senderId = myContact.id;
+    const senderFirstName = myContact.firstName;
     const text = msg.text;
     const msgId = msg.id;
     const date = new Date(msg.date * 1000);
